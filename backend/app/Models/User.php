@@ -48,4 +48,34 @@ class User extends Authenticatable
     {
         $this->notify(new ResetPasswordNotification($token));
     }
+    
+    public function perfilEstudiante()
+    {
+        return $this->hasOne(PerfilEstudiante::class, 'usuario_id');
+    }
+
+    public function inscripciones()
+    {
+        return $this->hasMany(Inscripcion::class, 'usuario_id');
+    }
+
+    public function cuotas()
+    {
+        return $this->hasMany(Cuota::class, 'usuario_id');
+    }
+
+    public function pagos()
+    {
+        return $this->hasMany(Pago::class, 'usuario_id');
+    }
+
+    public function notas()
+    {
+        return $this->hasMany(Nota::class, 'usuario_id');
+    }
+
+    public function asistencias()
+    {
+        return $this->hasMany(Asistencia::class, 'usuario_id');
+    }
 }

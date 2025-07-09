@@ -13,6 +13,7 @@ use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
 use LaravelJsonApi\Laravel\Http\Controllers\JsonApiController;
 use App\Models\User;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\EstudianteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,4 +42,7 @@ JsonApiRoute::server('v2')->prefix('v2')->resources(function (ResourceRegistrar 
     $server->resource('users', JsonApiController::class);
     Route::get('me', [MeController::class, 'readProfile']);
     Route::patch('me', [MeController::class, 'updateProfile']);
+});
+Route::prefix('v2')->group(function () {
+    Route::get('/estudiantes-inscritos', [EstudianteController::class, 'listadoEstudiantes']);
 });
