@@ -86,13 +86,6 @@ function BasicLayout({ image, children }) {
                     padding="1.5rem"
                     width="80%"
                   >
-                    <Typography variant="h3" style={{ color: "white" }}>
-                      Log in to Material Dashboard Laravel Live Preview
-                    </Typography>
-                    <Typography variant="body2" style={{ color: "white" }} margin="0.5rem 0">
-                      Log in to see how you can go from frontend to fullstack in an instant with an
-                      API-based Laravel backend
-                    </Typography>
                     <MDBox
                       display="flex"
                       flexDirection="column"
