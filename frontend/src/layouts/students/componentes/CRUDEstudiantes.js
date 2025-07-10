@@ -92,11 +92,10 @@ export default function EstudiantesInscritos() {
   };
 
   const columns = [
-    { Header: "ID", accessor: "id" },
-    { 
-      Header: "Nombre Completo", 
-      accessor: row => `${row.usuario?.name || ''} ${row.usuario?.apellido_paterno || ''} ${row.usuario?.apellido_materno || ''}`
-    },
+    { Header: "ID", accessor: "id" }, 
+    { Header: "Nombre", accessor: "usuario.name"},
+    { Header: "Apellido Paterno", accessor: "usuario.apellido_paterno" },
+    { Header: "Apellido Materno", accessor: "usuario.apellido_materno" }, 
     { Header: "Email", accessor: "usuario.email" },
     { Header: "Carrera", accessor: "carrera.nombre" },
     { Header: "Fecha Inscripción", accessor: "fecha_inscripcion" },
