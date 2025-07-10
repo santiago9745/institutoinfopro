@@ -48,7 +48,7 @@ export default function UsersList() {
 
   const handleOpen = (user) => {
     setSelectedUser(user);
-    setEditUser({ id: user.id, name: user.name, email: user.email });
+    setEditUser({ id: user.id, name: user.name, email: user.email, rol: user.rol });
     setOpen(true);
   };
   const handleClose = () => {
@@ -76,6 +76,17 @@ export default function UsersList() {
             { Header: "ID", accessor: "id" },
             { Header: "Nombre", accessor: "name" },
             { Header: "Email", accessor: "email" },
+            { Header: "Rol", accessor:"rol",
+              Cell: ({ value }) => {
+                const roles = {
+                  1:"Director",
+                  2:"Secretaria",
+                  3:"Docente",
+                  4:"Estudiante",
+                };
+                return roles[value] || "Desconocido";
+              },
+            },
             { Header: "Acciones",
                 Cell:({ row }) =>(
                     <MDButton color="info" size="small" onClick={() => handleOpen(row.original)}>
@@ -91,7 +102,7 @@ export default function UsersList() {
 
   return (
     <div>
-      <MDButton sx={{ ml: 2 }} color="success" onClick={() => { setEditUser({ id: '', name: '', email: '' }); setOpen(true); }}>
+      <MDButton sx={{ ml: 2 }} color="success" onClick={() => { setEditUser({ id: '', name: '', email: '', rol: ''}); setOpen(true); }}>
         Añadir usuario
       </MDButton>
 
@@ -144,6 +155,22 @@ export default function UsersList() {
                   onChange={handleChange}
                   type="password"
                 />
+                <TextField
+                  select
+                  label="Rol"
+                  name="rol"
+                  value={editUser.rol}
+                  onChange={handleChange}
+                  fullWidth
+                  margin="normal"
+                  SelectProps={{ native: true }}
+                >
+                  <option value="">Seleccione un rol</option>
+                  <option value="1">Director</option>
+                  <option value="2">Secretaria</option>
+                  <option value="3">Docente</option>
+                  <option value="4">Estudiante</option>
+                </TextField>
             </Box>
             <MDButton color="info" sx={{ mt: 2, mr: 2 }} onClick={handleSaveUser}>
               {editUser.id ? "Actualizar" : "Guardar"}

@@ -20,6 +20,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
+            'rol'      => 'required|in:1,2,3,4',
         ]);
 
         // Crear el nuevo usuario
@@ -27,6 +28,7 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'rol'      => $validated['rol'],
         ]);
 
         return response()->json([
