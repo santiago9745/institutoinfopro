@@ -41,7 +41,8 @@ function DataTableHeadCell({ width, children, sorted, align, ...rest }) {
     >
       <MDBox
         {...rest}
-        position="relative"
+        display="flex"
+        alignItems="center"
         textAlign={align}
         color={darkMode ? "white" : "secondary"}
         opacity={0.7}
@@ -56,32 +57,30 @@ function DataTableHeadCell({ width, children, sorted, align, ...rest }) {
         {children}
         {sorted && (
           <MDBox
-            position="absolute"
-            top={0}
-            right={align !== "right" ? "16px" : 0}
-            left={align === "right" ? "-5px" : "unset"}
-            sx={({ typography: { size } }) => ({
-              fontSize: size.lg,
-            })}
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            ml={1} // margen a la izquierda del texto
+            sx={{ gap: 0 }}
           >
-            <MDBox
-              position="absolute"
-              top={-6}
+            <Icon
+              fontSize="small"
               color={sorted === "asce" ? "text" : "secondary"}
-              opacity={sorted === "asce" ? 1 : 0.5}
+              sx={{ opacity: sorted === "asce" ? 1 : 0.5, lineHeight: 0.8,marginBottom: "-13px"}}
             >
-              <Icon>arrow_drop_up</Icon>
-            </MDBox>
-            <MDBox
-              position="absolute"
-              top={0}
+              arrow_drop_up
+            </Icon>
+            <Icon
+              fontSize="small"
               color={sorted === "desc" ? "text" : "secondary"}
-              opacity={sorted === "desc" ? 1 : 0.5}
+              sx={{ opacity: sorted === "desc" ? 1 : 0.5, lineHeight: 0.8,marginBottom: "-4px"}}
             >
-              <Icon>arrow_drop_down</Icon>
-            </MDBox>
+              arrow_drop_down
+            </Icon>
           </MDBox>
         )}
+
       </MDBox>
     </MDBox>
   );
