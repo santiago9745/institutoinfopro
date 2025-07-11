@@ -12,20 +12,21 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
   bgcolor: 'background.paper',
-  width: 600,      // ancho del modal
-  height: 400,
+  borderRadius: 2,
   boxShadow: 24,
   p: 4,
-  borderRadius: 2,
+  width: 500,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 2,
 };
 
 export default function UsersList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-  const [editUser, setEditUser] = useState({ id: '', name: '', email: '' });
+  const [editUser, setEditUser] = useState({ id: '', name: '', email: '', password: '' });
   const [selectedUser, setSelectedUser] = useState(null);
 
   const fetchUsers = () => {
@@ -115,71 +116,62 @@ export default function UsersList() {
         isSorted={true}
         noEndBorder={false}
       />
-        <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-title" variant="h6" component="h2" mb={2}>
+      <Modal open={open} onClose={handleClose}>
+        <Box
+          sx={ style }
+        >
+          <Typography variant="h6" component="h2">
             {editUser.id ? "Actualizar Usuario" : "Agregar Usuario"}
           </Typography>
 
-          {/* Aquí puedes poner inputs para añadir o editar usuario */}
-            <Box sx={{ display:'flex', gap: 2 }}>
-                <TextField
-                    label="Nombre"
-                    fullWidth
-                    margin="normal"
-                    name="name"
-                    value={editUser.name}
-                    onChange={handleChange}
-                    size="medium"
-                />
-                <TextField
-                    label="Email"
-                    fullWidth
-                    margin="normal"
-                    name="email"
-                    value={editUser.email}
-                    onChange={handleChange}
-                    size="medium"
-                />
-                <TextField
-                  label="Contraseña"
-                  fullWidth
-                  margin="normal"
-                  name="password"
-                  value={editUser.password}
-                  onChange={handleChange}
-                  type="password"
-                />
-                <TextField
-                  select
-                  label="Rol"
-                  name="rol"
-                  value={editUser.rol}
-                  onChange={handleChange}
-                  fullWidth
-                  margin="normal"
-                  SelectProps={{ native: true }}
-                >
-                  <option value="">Seleccione un rol</option>
-                  <option value="1">Director</option>
-                  <option value="2">Secretaria</option>
-                  <option value="3">Docente</option>
-                  <option value="4">Estudiante</option>
-                </TextField>
-            </Box>
-            <MDButton color="info" sx={{ mt: 2, mr: 2 }} onClick={handleSaveUser}>
+          <TextField 
+            label="Nombre" 
+            fullWidth name="name" 
+            value={editUser.name} 
+            onChange={handleChange} 
+            />
+          <TextField 
+            label="Email" 
+            fullWidth name="email" 
+            value={editUser.email} 
+            onChange={handleChange} 
+          />
+          <TextField
+            label="Contraseña"
+            fullWidth
+            name="password"
+            value={editUser.password}
+            onChange={handleChange}
+            type="password"
+          />
+          <TextField
+            select
+            label="Rol"
+            name="rol"
+            value={editUser.rol}
+            onChange={handleChange}
+            fullWidth
+            SelectProps={{ native: true }}
+          >
+            <option value=""></option>
+            <option value="1">Director</option>
+            <option value="2">Secretaria</option>
+            <option value="3">Docente</option>
+            <option value="4">Estudiante</option>
+          </TextField>
+
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
+            <MDButton color="info" onClick={handleSaveUser}>
               {editUser.id ? "Actualizar" : "Guardar"}
             </MDButton>
-          <MDButton color="info" onClick={handleClose} sx={{ mt: 2 }}>
-            Cerrar
-          </MDButton>
+            <MDButton color="secondary" onClick={handleClose}>
+              Cerrar
+            </MDButton>
+          </Box>
         </Box>
       </Modal>
+
+
     </div>
   );
 }

@@ -17,6 +17,7 @@ Coded by www.creative-tim.com
   This file is used for controlling the global states of the components,
   you can customize the states for the different components here.
 */
+import axios from "axios";
 
 import { createContext, useContext, useReducer, useMemo, useState, useEffect } from "react";
 
@@ -41,33 +42,40 @@ const AuthContextProvider = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const token = localStorage.getItem("token");
+  const accessToken = localStorage.getItem("access_token");
 
+  // Cuando se monta el contexto, verificamos si hay token guardado
   useEffect(() => {
-    if (!token) return;
+    if (!accessToken) return;
 
     setIsAuthenticated(true);
+    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
     navigate(location.pathname);
   }, []);
 
+  // Si el estado de autenticación cambia, redireccionamos si hace falta
   useEffect(() => {
-    if (!token) {
+    if (!accessToken) {
       navigate("/auth/login");
       return;
     }
 
-    setIsAuthenticated(isAuthenticated);
+    setIsAuthenticated(true);
     navigate(location.pathname);
   }, [isAuthenticated]);
 
-  const login = (token) => {
-    localStorage.setItem("token", token);
+  const login = (accessToken, refreshToken) => {
+    localStorage.setItem("access_token", accessToken);
+    localStorage.setItem("refresh_token", refreshToken);
+    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
     setIsAuthenticated(true);
     navigate("/dashboard");
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    delete axios.defaults.headers.common["Authorization"];
     setIsAuthenticated(false);
     navigate("/auth/login");
   };
@@ -78,7 +86,6 @@ const AuthContextProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
 // Setting custom name for the context which is visible on react dev tools
 MaterialUI.displayName = "MaterialUIContext";
 
