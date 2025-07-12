@@ -28,10 +28,11 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 import AuthService from "services/auth-service";
 import { AuthContext } from "context";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const authContext = useContext(AuthContext);
-
+  const navigate = useNavigate();
   const [user, setUser] = useState({});
   const [credentialsErros, setCredentialsError] = useState(null);
   const [rememberMe, setRememberMe] = useState(false);
@@ -86,6 +87,7 @@ function Login() {
     try {
       const response = await AuthService.login(myData);
       authContext.login(response.access_token, response.refresh_token);
+      navigate("/inicio");
     } catch (res) {
       if (res.hasOwnProperty("message")) {
         setCredentialsError(res.message);

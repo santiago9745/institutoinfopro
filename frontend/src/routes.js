@@ -36,10 +36,10 @@ Coded by www.creative-tim.com
 */
 
 // Material Dashboard 2 React layouts
-import Dashboard from "layouts/dashboard";
+// import Dashboard from "layouts/dashboard";
 /*import Tables from "layouts/tables";
 import Notifications from "layouts/notifications";*/
-import Profile from "layouts/profile";
+// import Profile from "layouts/profile";
 import UserProfile from "layouts/user-profile";
 import UserManagement from "layouts/user-management";
 import StudentsList from "layouts/students";
@@ -47,6 +47,7 @@ import SubjectsList from "layouts/subjects";
 import ReportsDashboard from "layouts/reports";
 import GradesList from "layouts/grades";
 import PaymentsList from "layouts/payments"
+import Inicio from "layouts/inicio";
 
 
 import Login from "auth/login";
@@ -58,7 +59,15 @@ import ResetPassword from "auth/reset-password";
 import Icon from "@mui/material/Icon";
 
 const routes = [
-    {
+  {
+    type: "examples",
+    name: "Inicio",
+    key: "inicio",
+    icon: <Icon fontSize="small">home</Icon>,
+    route: "/inicio",
+    component: <Inicio />,
+  },
+  {
     type: "collapse",
     name: "User Management",
     key: "user-management",
@@ -106,15 +115,15 @@ const routes = [
     route: "/reports",
     component: <ReportsDashboard />,
   },
-  {
-    type: "collapse",
-    name: "Dashboard",
-    key: "dashboard",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/dashboard",
-    component: <Dashboard />,
-  },
-  
+  // {
+  //   type: "collapse",
+  //   name: "Dashboard",
+  //   key: "dashboard",
+  //   icon: <Icon fontSize="small">dashboard</Icon>,
+  //   route: "/dashboard",
+  //   component: <Dashboard />,
+  // },
+
   /*{
     type: "collapse",
     name: "Tables",
@@ -133,17 +142,17 @@ const routes = [
     component: <Notifications />,
   },*/
   
-  {
-    type: "collapse",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    component: <Profile />,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Profile",
+  //   key: "profile",
+  //   icon: <Icon fontSize="small">person</Icon>,
+  //   route: "/profile",
+  //   component: <Profile />,
+  // },
   {
     type: "examples",
-    name: "User Profile",
+    name: "Perfil de usuario",
     key: "user-profile",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/user-profile",
