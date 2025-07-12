@@ -49,35 +49,23 @@ function Footer({ light }) {
           alignItems="center"
           px={1.5}
         >
-          <MDBox
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            flexWrap="wrap"
-            color={light ? "white" : "text"}
-            fontSize={size.sm}
-          >
-            &copy; {new Date().getFullYear()}, made with
-            <MDBox fontSize={size.md} color={light ? "white" : "dark"} mb={-0.5} mx={0.25}>
-              <Icon color="inherit" fontSize="inherit">
-                favorite
-              </Icon>
-            </MDBox>
-            by
-            <Link href="https://www.creative-tim.com/" target="_blank">
-              <MDTypography variant="button" fontWeight="medium" color={light ? "white" : "dark"}>
-                &nbsp;Creative Tim&nbsp;
-              </MDTypography>
-            </Link>
-            &amp;
-            <Link href="https://www.updivision.com/" target="_blank">
-              <MDTypography variant="button" fontWeight="medium" color={light ? "white" : "dark"}>
-                &nbsp;UPDIVISION&nbsp;
-              </MDTypography>
-            </Link>
-            for a better web.
+        <MDBox
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          flexWrap="wrap"
+          color={light ? "white" : "text"}
+          fontSize={size.sm}
+        >
+          &copy; {new Date().getFullYear()}, desarrollado
+          <MDBox fontSize={size.md} color={light ? "white" : "dark"} mb={-0.5} mx={0.25}>
           </MDBox>
-          <MDBox
+          por el&nbsp;
+          <MDTypography variant="button" fontWeight="medium" color={light ? "white" : "dark"}>
+            INSTITUTO TECNOLÓGICO INFOPRO - CLADECORP
+          </MDTypography>
+        </MDBox>
+          {/* <MDBox
             component="ul"
             sx={({ breakpoints }) => ({
               display: "flex",
@@ -149,7 +137,7 @@ function Footer({ light }) {
                 </MDTypography>
               </Link>
             </MDBox>
-          </MDBox>
+          </MDBox> */}
         </MDBox>
       </Container>
     </MDBox>
