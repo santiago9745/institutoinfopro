@@ -1,11 +1,22 @@
-import Axios from "axios";
+import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
-Axios.defaults.baseURL = API_URL;
+axios.defaults.baseURL = API_URL;
 
 export class HttpService {
-  _axios = Axios.create();
+  _axios = axios.create();
 
+  constructor() {
+    // 👇 Este interceptor se ejecuta en todas las peticiones hechas con this._axios
+    this._axios.interceptors.request.use((config) => {
+      const token = localStorage.getItem("access_token");
+      if (token) {
+        config.headers["Authorization"] = `Bearer ${token}`;
+      }
+      return config;
+    });
+  }
+  
   addRequestInterceptor = (onFulfilled, onRejected) => {
     this._axios.interceptors.request.use(onFulfilled, onRejected);
   };

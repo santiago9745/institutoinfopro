@@ -36,7 +36,7 @@ const UserManagement = () => {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Users Table
+                  Tabla de usuarios
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>

@@ -26,7 +26,7 @@ use App\Http\Controllers\EstudianteController;
 |
 */
 
-Route::prefix('v2')->middleware('json.api')->group(function () {
+Route::middleware('auth:sanctum')->prefix('v2')->middleware('json.api')->group(function () {
     Route::post('/login', LoginController::class)->name('login');
     Route::post('/logout', LogoutController::class)->middleware('auth:api');
     Route::post('/register', RegisterController::class);

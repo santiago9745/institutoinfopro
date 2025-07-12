@@ -189,7 +189,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             <Icon sx={{ fontWeight: "bold" }}>close</Icon>
           </MDTypography>
         </MDBox>
-        <MDBox component={NavLink} to="/" display="flex" alignItems="center">
+        <MDBox component={NavLink} to="/inicio" display="flex" alignItems="center">
           {brand && <MDBox component="img" src={brand} alt="Brand" width="2rem" />}
           <MDBox
             width={!brandName && "100%"}
@@ -210,7 +210,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       <List>
         <MDBox display="flex flex-col" alignItems="center">
           <MDTypography color={textColor} variant="body2" fontWeight="medium" pl="1.5rem">
-            Examples
+            Menú
           </MDTypography>
           {renderExampleRoutes}
         </MDBox>
