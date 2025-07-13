@@ -85,7 +85,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Materias",
+    name: "Carreras",
     key: "subjects",
     icon: <Icon fontSize="small">book</Icon>,
     route: "/subjects",

@@ -43,8 +43,8 @@ Route::get('/users', function () {
 Route::post('/users', [UserController::class, 'agregar']);
 Route::put('/users/{id}', [UserController::class, 'update']);
 
+Route::get('/carreras', [CarreraController::class, 'index']);
 
-// Rutas JSON:API
 JsonApiRoute::server('v2')->prefix('v2')->resources(function (ResourceRegistrar $server) {
     $server->resource('users', JsonApiController::class);
     Route::get('me', [MeController::class, 'readProfile']);
