@@ -94,27 +94,8 @@ function BasicLayout({ image, children }) {
                       marginBottom="0.5rem"
                     >
                       <Typography variant="body2" fontWeight="700" style={{ color: "white" }}>
+
                       </Typography>
-                      <List dense={true}>
-                        <ListItem>
-                          <ListItemText
-                            disableTypography
-                            primary={
-                              <Typography
-                                variant="body2"
-                                fontWeight="400"
-                                style={{ color: "white" }}
-                              >
-                                {" "}
-                                <Typography variant="span" fontWeight="700">
-                                </Typography>{" "}{" "}
-                                <Typography variant="span" fontWeight="700">
-                                </Typography>
-                              </Typography>
-                            }
-                          />
-                        </ListItem>
-                      </List>
                     </MDBox>
                   </MDBox>
                 </MDBox>

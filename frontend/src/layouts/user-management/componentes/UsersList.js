@@ -6,6 +6,7 @@ import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import { updateResource } from './CRUD/update';
+import { jwtDecode } from "jwt-decode";
 
 const style = {
   position: 'absolute',
@@ -28,20 +29,37 @@ export default function UsersList() {
   const [open, setOpen] = useState(false);
   const [editUser, setEditUser] = useState({ id: '', name: '', email: '', password: '' });
   const [selectedUser, setSelectedUser] = useState(null);
+  
 
   const fetchUsers = () => {
-    setLoading(true);
-    fetch('http://localhost:8000/api/users')
-      .then(res => res.json())
-      .then(data => {
-        setUsers(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
-  };
+  setLoading(true);
+  const token = localStorage.getItem("access_token");
+
+  if (!token) {
+    console.error("❌ No token found, please login");
+    setLoading(false);
+    return;
+  }
+
+  fetch("http://localhost:8000/api/users", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json", 
+    },
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("❌ Error en la petición");
+      return res.json();
+    })
+    .then((data) => {
+      setUsers(data);
+      setLoading(false);
+    })
+    .catch((err) => {
+      console.error("❌ Error:", err);
+      setLoading(false);
+    });
+};
 
   useEffect(() => {
     fetchUsers();

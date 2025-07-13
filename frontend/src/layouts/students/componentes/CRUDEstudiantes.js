@@ -55,11 +55,11 @@ export default function EstudiantesInscritos() {
   fetchEstudiantes();
 
   // Obtener usuarios y carreras
-  fetch(`${process.env.REACT_APP_API_URL}/usuarios`)
+  fetch(`${process.env.REACT_APP_API_URL}usuarios`)
     .then(res => res.json())
     .then(setUsuarios);
 
-  fetch(`${process.env.REACT_APP_API_URL}/carreras`)
+  fetch(`${process.env.REACT_APP_API_URL}carreras`)
     .then(res => res.json())
     .then(setCarreras);
 }, []);
@@ -67,7 +67,7 @@ export default function EstudiantesInscritos() {
   // Carga estudiantes con sus relaciones usuario y carrera
   const fetchEstudiantes = () => {
     setLoading(true);
-    fetch(`${process.env.REACT_APP_API_URL}/estudiantes-inscritos`)
+    fetch(`${process.env.REACT_APP_API_URL}estudiantes-inscritos`)
       .then(res => res.json())
       .then(data => {
         setEstudiantes(data);

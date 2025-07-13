@@ -68,7 +68,7 @@ function Footer({ company, links }) {
           <MDTypography variant="button" fontWeight="medium">
             INSTITUTO TECNOLÓGICO INFOPRO - CLADECORP
           </MDTypography>
-        </Link>
+        </Link
       </MDBox>
       {/* <MDBox
         component="ul"
