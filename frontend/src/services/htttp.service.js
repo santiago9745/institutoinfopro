@@ -1,22 +1,48 @@
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const API_URL = process.env.REACT_APP_API_URL;
 axios.defaults.baseURL = API_URL;
 
-export class HttpService {
+class HttpService {
   _axios = axios.create();
 
   constructor() {
-    // 👇 Este interceptor se ejecuta en todas las peticiones hechas con this._axios
     this._axios.interceptors.request.use((config) => {
-      const token = localStorage.getItem("access_token");
-      if (token) {
-        config.headers["Authorization"] = `Bearer ${token}`;
+    const token = localStorage.getItem("access_token");
+    if (token && token !== "null") {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    } else {
+      delete config.headers["Authorization"];
+    }
+    return config;
+  });
+
+    this._axios.interceptors.response.use(
+  response => response,
+  (error) => {
+    console.log("Interceptor response error:", error);
+
+    if (error.response) {
+      console.log("Status HTTP:", error.response.status);
+
+      if (error.response.status === 401) {
+        alert("No autorizado. Por favor inicia sesión nuevamente.");
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+        window.location.href = "/auth/login";
+        return Promise.reject(error);
       }
-      return config;
-    });
+    } else {
+      console.log("No hay respuesta del servidor o error de red");
+    }
+
+    return Promise.reject(error);
   }
-  
+);
+
+  }
+
   addRequestInterceptor = (onFulfilled, onRejected) => {
     this._axios.interceptors.request.use(onFulfilled, onRejected);
   };
@@ -44,7 +70,7 @@ export class HttpService {
       this._axios
         .request(options)
         .then((res) => resolve(res.data))
-        .catch((ex) => reject(ex.response.data));
+        .catch((ex) => reject(ex.response?.data || ex));
     });
   }
 }

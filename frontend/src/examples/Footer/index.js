@@ -60,27 +60,18 @@ function Footer({ company, links }) {
         fontSize={size.sm}
         px={1.5}
       >
-        &copy; {new Date().getFullYear()}, made with
+        &copy; {new Date().getFullYear()}, desarrollado
         <MDBox fontSize={size.md} color="text" mb={-0.5} mx={0.25}>
-          <Icon color="inherit" fontSize="inherit">
-            favorite
-          </Icon>
         </MDBox>
-        by
-        <Link href={href} target="_blank">
+        por el&nbsp;
+        <Link href="https://www.infopro.edu.bo" target="_blank">
           <MDTypography variant="button" fontWeight="medium">
-            &nbsp;{name}&nbsp;
+            INSTITUTO TECNOLÓGICO INFOPRO - CLADECORP
           </MDTypography>
         </Link>
         &amp;
-        <Link href="https://updivision.com" target="_blank">
-          <MDTypography variant="button" fontWeight="medium">
-            &nbsp;UPDIVISION&nbsp;
-          </MDTypography>
-        </Link>
-        for a better web.
       </MDBox>
-      <MDBox
+      {/* <MDBox
         component="ul"
         sx={({ breakpoints }) => ({
           display: "flex",
@@ -98,7 +89,7 @@ function Footer({ company, links }) {
         })}
       >
         {renderLinks()}
-      </MDBox>
+      </MDBox> */}
     </MDBox>
   );
 }

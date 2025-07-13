@@ -20,29 +20,38 @@ use App\Http\Controllers\EstudianteController;
 | API Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
+| ...
 |
 */
 
-Route::middleware('auth:sanctum')->prefix('v2')->middleware('json.api')->group(function () {
+// Rutas de autenticación que NO requieren un token (para obtener uno o registrarse)
+Route::prefix('v2')->middleware('json.api')->group(function () {
     Route::post('/login', LoginController::class)->name('login');
-    Route::post('/logout', LogoutController::class)->middleware('auth:api');
     Route::post('/register', RegisterController::class);
-    Route::post('/password-forgot', ForgotPasswordController::class);
+    Route::post('/password-forgot', ForgotPasswordController::class); // Asumo que es ForgotController
     Route::post('/password-reset', ResetPasswordController::class)->name('password.reset');
 });
+
+Route::middleware('auth:api')->prefix('v2')->middleware('json.api')->group(function () {
+    Route::post('/logout', LogoutController::class); // Esta sí requiere autenticación
+    // Aquí irían tus otras rutas protegidas, como 'me' si está protegida por Passport/Sanctum
+});
+
 Route::get('/users', function () {
     return User::all();
 });
 Route::post('/users', [UserController::class, 'agregar']);
 Route::put('/users/{id}', [UserController::class, 'update']);
+
+
+// Rutas JSON:API
 JsonApiRoute::server('v2')->prefix('v2')->resources(function (ResourceRegistrar $server) {
     $server->resource('users', JsonApiController::class);
     Route::get('me', [MeController::class, 'readProfile']);
     Route::patch('me', [MeController::class, 'updateProfile']);
 });
+
+// Otras rutas (sin autenticación explícita de grupo)
 Route::prefix('v2')->group(function () {
     Route::get('/estudiantes-inscritos', [EstudianteController::class, 'listadoEstudiantes']);
 });
