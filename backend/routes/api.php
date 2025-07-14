@@ -32,7 +32,7 @@ Route::prefix('v2')->middleware('json.api')->group(function () {
     Route::post('/password-reset', ResetPasswordController::class)->name('password.reset');
 });
 
-Route::middleware('auth:api')->prefix('v2')->middleware('json.api')->group(function () {
+Route::middleware('auth:api', 'json.api')->prefix('v2')->group(function () {
     Route::post('/logout', LogoutController::class); // Esta sí requiere autenticación
     // Aquí irían tus otras rutas protegidas, como 'me' si está protegida por Passport/Sanctum
 });
