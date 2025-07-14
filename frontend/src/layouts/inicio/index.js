@@ -26,7 +26,7 @@ const Inicio = () => {
           <Grid item xs={12}>
             <MDBox textAlign="center" px={2} py={1}>
               <MDTypography variant="h3" fontWeight="bold" color="primary" gutterBottom>
-                ¡Bienvenido al Sistema de Gestión Académica de Infopro!
+                ¡Bienvenido al Sistema de Gestión Académica de INFOPRO!
               </MDTypography>
               <MDTypography variant="h5" color="text" fontWeight="regular">
                 La tecnología y la educación se unen para brindarte una mejor experiencia.
@@ -38,7 +38,7 @@ const Inicio = () => {
           <Grid item xs={12}>
             <MDBox px={4} py={1}>
               <MDTypography variant="body1" color="text" lineHeight={1.8}>
-                Este sistema fue desarrollado para facilitar y optimizar la administración académica del Instituto Tecnológico Infopro.
+                Este sistema fue desarrollado para facilitar y optimizar la administración académica del Instituto Tecnológico INFOPRO.
                 Permite registrar y gestionar estudiantes, docentes, materias, calificaciones y pagos de manera eficiente.
                 Su diseño intuitivo permite que tanto personal administrativo como docentes puedan trabajar con facilidad.
               </MDTypography>
