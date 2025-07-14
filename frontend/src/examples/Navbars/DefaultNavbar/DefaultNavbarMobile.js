@@ -49,8 +49,8 @@ function DefaultNavbarMobile({ open, close }) {
     >
       {!authContext.isAuthenticated && (
         <MDBox px={0.5}>
-          <DefaultNavbarLink icon="account_circle" name="register" route="/auth/register" />
-          <DefaultNavbarLink icon="key" name="login" route="/auth/login" />
+          <DefaultNavbarLink icon="account_circle" name="register" route="/auth/register" light={true} />
+          <DefaultNavbarLink icon="key" name="login" route="/auth/login" light={true}/>
         </MDBox>
       )}
       {authContext.isAuthenticated && (
