@@ -57,7 +57,7 @@ function Footer({ light }) {
           color={light ? "white" : "text"}
           fontSize={size.sm}
         >
-          &copy; {new Date().getFullYear()}, desarrollado
+          &copy; {new Date().getFullYear()}, Desarrollado
           <MDBox fontSize={size.md} color={light ? "white" : "dark"} mb={-0.5} mx={0.25}>
           </MDBox>
           por el&nbsp;
