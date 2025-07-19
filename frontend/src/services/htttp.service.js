@@ -9,7 +9,7 @@ class HttpService {
 
   constructor() {
     this._axios.interceptors.request.use((config) => {
-    const token = localStorage.getItem("access_token");
+    const token = sessionStorage.getItem("access_token");
     if (token && token !== "null") {
       config.headers["Authorization"] = `Bearer ${token}`;
     } else {
@@ -28,8 +28,8 @@ class HttpService {
 
       if (error.response.status === 401) {
         alert("No autorizado. Por favor inicia sesión nuevamente.");
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
+        sessionStorage.removeItem("access_token");
+        sessionStorage.removeItem("refresh_token");
         window.location.href = "/auth/login";
         return Promise.reject(error);
       }

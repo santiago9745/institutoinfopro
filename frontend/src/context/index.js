@@ -42,7 +42,7 @@ const AuthContextProvider = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const accessToken = localStorage.getItem("access_token");
+  const accessToken = sessionStorage.getItem("access_token");
 
   // Cuando se monta el contexto, verificamos si hay token guardado
   useEffect(() => {
@@ -65,16 +65,16 @@ const AuthContextProvider = ({ children }) => {
   }, [isAuthenticated]);
 
   const login = (accessToken, refreshToken) => {
-    localStorage.setItem("access_token", accessToken);
-    localStorage.setItem("refresh_token", refreshToken);
+    sessionStorage.setItem("access_token", accessToken);
+    sessionStorage.setItem("refresh_token", refreshToken);
     axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
     setIsAuthenticated(true);
     navigate("/dashboard");
   };
 
   const logout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
+    sessionStorage.removeItem("access_token");
+    sessionStorage.removeItem("refresh_token");
     delete axios.defaults.headers.common["Authorization"];
     setIsAuthenticated(false);
     navigate("/auth/login");
