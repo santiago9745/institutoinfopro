@@ -13,7 +13,6 @@ import Footer from "examples/Footer";
 /*import DataTable from "examples/Tables/DataTable";*/
 
 import authorsTableData from "layouts/user-management/data";
-import Tabla from "./componentes/tabla_carreras";
 
 const UserManagement = () => {
   const { columns, rows } = authorsTableData();
@@ -36,11 +35,10 @@ const UserManagement = () => {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Listado de las carreras 
+                  Listado de materias
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
-                <Tabla/>
               </MDBox>
             </Card>
           </Grid>

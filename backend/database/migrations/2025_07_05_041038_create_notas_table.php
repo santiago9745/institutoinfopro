@@ -15,8 +15,10 @@ return new class extends Migration
             $table->increments('id');
             $table->unsignedInteger('usuario_id');
             $table->foreign('usuario_id')->references('id')->on('users');
-            $table->unsignedInteger('carrera_id');
-            $table->foreign('carrera_id')->references('id')->on('carreras');
+            $table->unsignedInteger('materia_id');
+            $table->foreign('materia_id')->references('id')->on('materias')->onDelete('cascade');
+            $table->unsignedInteger('docente_id');
+            $table->foreign('docente_id')->references('id')->on('users')->onDelete('cascade');
             $table->integer('nota');
             $table->text('observaciones')->nullable();
             $table->timestamps();
@@ -28,6 +30,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+         Schema::table('notas', function (Blueprint $table) {
+            $table->dropForeign(['carrera_id']); // Quita la FK primero
+        });
         Schema::dropIfExists('notas');
     }
 };

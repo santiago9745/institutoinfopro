@@ -35,7 +35,7 @@ const UserManagement = () => {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Reportes
+                  Reporte
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>

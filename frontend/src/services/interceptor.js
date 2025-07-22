@@ -2,7 +2,7 @@ import HttpService from "./htttp.service";
 
 export const setupAxiosInterceptors = (onUnauthenticated) => {
   const onRequestSuccess = async (config) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     config.headers.Authorization = `Bearer ${token}`;
     return config;
   };

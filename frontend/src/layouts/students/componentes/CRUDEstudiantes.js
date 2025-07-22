@@ -6,6 +6,11 @@ import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+
+
 
 const style = {
   position: 'absolute',
@@ -27,6 +32,13 @@ export default function EstudiantesInscritos() {
   const [open, setOpen] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
   const [carreras, setCarreras] = useState([]);
+  const steps = ['Datos del Estudiante', 'Datos de Inscripción', 'Datos de Pago'];
+  const [step, setStep] = useState(1);
+  const completed = {
+  0: step > 1, // paso 1 completado si step es > 1
+  1: step > 2, // paso 2 completado si step es > 2
+  2: false,    // paso 3 (actual), aún no está completado
+};
   const [editEstudiante, setEditEstudiante] = useState({
    id: '', // id de inscripción (si edita)
     usuario_id: '', // se usa si edita
@@ -182,139 +194,198 @@ export default function EstudiantesInscritos() {
           <Typography id="modal-title" variant="h6" component="h2" mb={2}>
             {editEstudiante.id ? "Editar Inscripción" : "Nueva Inscripción"}
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField label="Nombre" fullWidth name="name" value={editEstudiante.name} onChange={handleChange} />
+          <Stepper activeStep={step - 1} alternativeLabel>
+            {steps.map((label, index) => (
+              <Step key={label} completed={completed[index]}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+
+          {/* ---------------------- PÁGINA 1: DATOS DEL ESTUDIANTE ---------------------- */}
+          {step === 1 && (
+            <>
+              <Typography variant="h6" fontWeight="bold" mb={2}>
+                Datos del Estudiante
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField label="Nombre" fullWidth name="name" value={editEstudiante.name} onChange={handleChange} />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField label="Apellido Paterno" fullWidth name="apellido_paterno" value={editEstudiante.apellido_paterno} onChange={handleChange} />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField label="Apellido Materno" fullWidth name="apellido_materno" value={editEstudiante.apellido_materno} onChange={handleChange} />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField label="CI" fullWidth name="ci" value={editEstudiante.ci} onChange={handleChange} />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField label="Expedido" fullWidth name="expedido" value={editEstudiante.expedido} onChange={handleChange} />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Celular" fullWidth name="celular" value={editEstudiante.celular} onChange={handleChange} />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Email" fullWidth name="email" value={editEstudiante.email} onChange={handleChange} />
+                </Grid>
               </Grid>
+            </>
+          )}
 
-              <Grid item xs={6}>
-                <TextField label="Apellido Paterno" fullWidth name="apellido_paterno" value={editEstudiante.apellido_paterno} onChange={handleChange} />
+          {/* ---------------------- PÁGINA 2: DATOS DE INSCRIPCIÓN ---------------------- */}
+          {step === 2 && (
+            <>
+              <Typography variant="h6" fontWeight="bold" mb={2}>
+                Datos de Inscripción
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    select
+                    label="Carrera"
+                    fullWidth
+                    name="carrera_id"
+                    value={editEstudiante.carrera_id}
+                    onChange={handleChange}
+                    SelectProps={{ native: true }}
+                  >
+                    <option value=""></option>
+                    {carreras.map((carrera) => (
+                      <option key={carrera.id} value={carrera.id}>
+                        {carrera.nombre}
+                      </option>
+                    ))}
+                  </TextField>
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    type="date"
+                    label="Fecha Inscripción"
+                    fullWidth
+                    name="fecha_inscripcion"
+                    value={editEstudiante.fecha_inscripcion}
+                    onChange={handleChange}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    select
+                    label="Estado"
+                    fullWidth
+                    name="estado"
+                    value={editEstudiante.estado}
+                    onChange={handleChange}
+                    SelectProps={{ native: true }}
+                  >
+                    <option value=""></option>
+                    <option value="activo">Activo</option>
+                    <option value="retirado">Retirado</option>
+                    <option value="reprobado">Reprobado</option>
+                    <option value="finalizado">Finalizado</option>
+                  </TextField>
+                </Grid>
               </Grid>
+            </>
+          )}
 
-              <Grid item xs={6}>
-                <TextField label="Apellido Materno" fullWidth name="apellido_materno" value={editEstudiante.apellido_materno} onChange={handleChange} />
+          {/* ---------------------- PÁGINA 3: DATOS DE PAGO ---------------------- */}
+          {step === 3 && (
+            <>
+              <Typography variant="h6" fontWeight="bold" mb={2}>
+                Datos de Pago
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Monto"
+                    type="number"
+                    fullWidth
+                    name="monto_pago"
+                    value={editEstudiante.monto_pago || ''}
+                    onChange={handleChange}
+                    inputProps={{ min: 0, step: 0.01 }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Concepto"
+                    fullWidth
+                    name="concepto_pago"
+                    value={editEstudiante.concepto_pago || ''}
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Fecha de Pago"
+                    type="date"
+                    fullWidth
+                    name="fecha_pago"
+                    value={editEstudiante.fecha_pago || ''}
+                    onChange={handleChange}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Grid>
               </Grid>
+            </>
+          )}
 
-              <Grid item xs={6}>
-                <TextField label="CI" fullWidth name="ci" value={editEstudiante.ci} onChange={handleChange} />
-              </Grid>
+          {/* ---------------------- NAVEGACIÓN ENTRE PASOS ---------------------- */}
+<Box mt={4} display="flex" justifyContent="space-between" alignItems="center">
+  {/* Botón cancelar a la izquierda */}
+  <MDButton color="secondary" onClick={handleClose}>
+    Cancelar
+  </MDButton>
 
-              <Grid item xs={6}>
-                <TextField label="Expedido" fullWidth name="expedido" value={editEstudiante.expedido} onChange={handleChange} />
-              </Grid>
+  {/* Grupo de botones: Atrás + Siguiente */}
+  <Box display="flex" sx={{ borderRadius: '8px', overflow: 'hidden', boxShadow: 1 }}>
+    {step > 1 && (
+      <MDButton
+        color="info"
+        onClick={() => setStep(step - 1)}
+        sx={{
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
+        }}
+      >
+        Atrás
+      </MDButton>
+    )}
+    {step < 3 ? (
+      <MDButton
+        color="info"
+        onClick={() => setStep(step + 1)}
+        sx={{
+          borderTopLeftRadius: 0,
+          borderBottomLeftRadius: 0,
+          borderLeft: '1px solid rgba(255,255,255,0.3)', // línea divisoria
+        }}
+      >
+        Siguiente
+      </MDButton>
+    ) : (
+      <MDButton
+        color="success"
+        onClick={handleSaveEstudiante}
+        sx={{
+          borderTopLeftRadius: step > 1 ? 0 : '8px',
+          borderBottomLeftRadius: step > 1 ? 0 : '8px',
+          borderLeft: '1px solid rgba(255,255,255,0.3)', // línea divisoria
+        }}
+      >
+        Guardar
+      </MDButton>
+    )}
+  </Box>
+</Box>
 
-              <Grid item xs={12}>
-                <TextField label="Celular" fullWidth name="celular" value={editEstudiante.celular} onChange={handleChange} />
-              </Grid>
 
-              <Grid item xs={12}>
-                <TextField label="Email" fullWidth name="email" value={editEstudiante.email} onChange={handleChange} />
-              </Grid>
-
-
-            </Grid>
-          </Box>
-          {/* Datos de inscripción */}
-          <Typography variant="h6" fontWeight="bold" mt={4} mb={1}>
-            Datos de Inscripción
-          </Typography>
-
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <TextField
-                select
-                label="Carrera"
-                fullWidth
-                name="carrera_id"
-                value={editEstudiante.carrera_id}
-                onChange={handleChange}
-                SelectProps={{ native: true }}
-              >
-                <option value=""></option>
-                {carreras.map((carrera) => (
-                  <option key={carrera.id} value={carrera.id}>
-                    {carrera.nombre}
-                  </option>
-                ))}
-              </TextField>
-            </Grid>
-
-            <Grid item xs={6}>
-              <TextField
-                type="date"
-                label="Fecha Inscripción"
-                fullWidth
-                name="fecha_inscripcion"
-                value={editEstudiante.fecha_inscripcion}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                select
-                label="Estado"
-                fullWidth
-                name="estado"
-                value={editEstudiante.estado}
-                onChange={handleChange}
-                SelectProps={{ native: true }}
-              >
-                <option value=""></option>
-                <option value="activo">Activo</option>
-                <option value="retirado">Retirado</option>
-                <option value="reprobado">Reprobado</option>
-                <option value="finalizado">Finalizado</option>
-              </TextField>
-            </Grid>
-          </Grid>
-          <Typography variant="h6" fontWeight="bold" mt={4} mb={1}>
-            Datos de Pago
-          </Typography>
-
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <TextField
-                label="Monto"
-                type="number"
-                fullWidth
-                name="monto_pago"
-                value={editEstudiante.monto_pago || ''}
-                onChange={handleChange}
-                inputProps={{ min: 0, step: 0.01 }}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Concepto"
-                fullWidth
-                name="concepto_pago"
-                value={editEstudiante.concepto_pago || ''}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Fecha de Pago"
-                type="date"
-                fullWidth
-                name="fecha_pago"
-                value={editEstudiante.fecha_pago || ''}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-          </Grid>
-          <MDButton color="info" sx={{ mt: 2, mr: 2 }} onClick={handleSaveEstudiante}>
-            {editEstudiante.id ? "Actualizar" : "Guardar"}
-          </MDButton>
-          <MDButton color="info" onClick={handleClose} sx={{ mt: 2 }}>
-            Cerrar
-          </MDButton>
         </Box>
       </Modal>
+
     </div>
   );
 }

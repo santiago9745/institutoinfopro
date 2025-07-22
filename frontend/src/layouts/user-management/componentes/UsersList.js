@@ -33,7 +33,7 @@ export default function UsersList() {
 
   const fetchUsers = () => {
   setLoading(true);
-  const token = localStorage.getItem("access_token");
+  const token = sessionStorage.getItem("access_token");
 
   if (!token) {
     console.error("❌ No token found, please login");

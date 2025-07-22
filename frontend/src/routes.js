@@ -48,6 +48,7 @@ import ReportsDashboard from "layouts/reports";
 import GradesList from "layouts/grades";
 import PaymentsList from "layouts/payments"
 import Inicio from "layouts/inicio";
+import Materias from "layouts/materias";
 
 
 import Login from "auth/login";
@@ -90,6 +91,14 @@ const routes = [
     icon: <Icon fontSize="small">book</Icon>,
     route: "/subjects",
     component: <SubjectsList />,
+  },
+  {
+    type: "collapse",
+    name: "Materias",
+    key: "materias",
+    icon: <Icon fontSize="small">library_books</Icon>,
+    route: "/materias",
+    component: <Materias />,
   },
   {
     type: "collapse",
