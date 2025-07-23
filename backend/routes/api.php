@@ -14,6 +14,8 @@ use LaravelJsonApi\Laravel\Http\Controllers\JsonApiController;
 use App\Models\User;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EstudianteController;
+use App\Http\Controllers\MateriaController;
+use App\Http\Controllers\CarreraController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +37,9 @@ Route::prefix('v2')->middleware('json.api')->group(function () {
 Route::middleware('auth:api', 'json.api')->prefix('v2')->group(function () {
     Route::post('/logout', LogoutController::class); // Esta sí requiere autenticación
     // Aquí irían tus otras rutas protegidas, como 'me' si está protegida por Passport/Sanctum
+    Route::get('/materias', [MateriaController::class, 'index']);
+    Route::post('/materias', [MateriaController::class, 'store']);
+    Route::put('/materias/{id}', [MateriaController::class, 'update']);
 });
 
 Route::get('/users', function () {
@@ -44,6 +49,8 @@ Route::post('/users', [UserController::class, 'agregar']);
 Route::put('/users/{id}', [UserController::class, 'update']);
 
 Route::get('/carreras', [CarreraController::class, 'index']);
+Route::post('carreras', [CarreraController::class, 'store']);   
+Route::put('carreras/{id}', [CarreraController::class, 'update']);
 
 JsonApiRoute::server('v2')->prefix('v2')->resources(function (ResourceRegistrar $server) {
     $server->resource('users', JsonApiController::class);
