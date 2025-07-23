@@ -11,6 +11,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 /*import DataTable from "examples/Tables/DataTable";*/
+import Materias from "./componentes/tabla_materias"
 
 import authorsTableData from "layouts/user-management/data";
 
@@ -39,6 +40,7 @@ const UserManagement = () => {
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
+                <Materias/>
               </MDBox>
             </Card>
           </Grid>
