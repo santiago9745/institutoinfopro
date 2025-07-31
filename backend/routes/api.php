@@ -51,6 +51,7 @@ Route::put('/users/{id}', [UserController::class, 'update']);
 Route::get('/carreras', [CarreraController::class, 'index']);
 Route::post('carreras', [CarreraController::class, 'store']);   
 Route::put('carreras/{id}', [CarreraController::class, 'update']);
+Route::get('/materias', [CarreraController::class, 'materias']);
 
 JsonApiRoute::server('v2')->prefix('v2')->resources(function (ResourceRegistrar $server) {
     $server->resource('users', JsonApiController::class);
@@ -62,3 +63,4 @@ JsonApiRoute::server('v2')->prefix('v2')->resources(function (ResourceRegistrar 
 Route::prefix('v2')->group(function () {
     Route::get('/estudiantes-inscritos', [EstudianteController::class, 'listadoEstudiantes']);
 });
+Route::post('/inscripciones', [EstudianteController::class, 'store']);

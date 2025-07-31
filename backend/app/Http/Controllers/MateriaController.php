@@ -26,6 +26,7 @@ class MateriaController extends Controller
                 'asignatura' => 'required|string|max:150',
                 'semestre' => 'required|integer|min:1',
                 'horas' => 'required|integer|min:1',
+                'carrera_id' => 'required|exists:carreras,id',
             ]);
             $materia = Materia::create($request->all());
             return response()->json($materia,201);
@@ -63,6 +64,7 @@ class MateriaController extends Controller
                 'asignatura' => 'required|string|max:150',
                 'semestre' => 'required|integer|min:1',
                 'horas' => 'required|integer|min:1',
+                'carrera_id' => 'required|exists:carreras,id',
             ]);
             $materia->update($request->all());
             return response()->json($materia);

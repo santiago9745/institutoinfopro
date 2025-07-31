@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Carrera;
 use Illuminate\Validation\ValidationException;
+use App\Models\Materia;
 
 class CarreraController extends Controller
 {
@@ -87,5 +88,18 @@ class CarreraController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+    public function materias(Request $request)
+    {
+        $carreraId = $request->query('carrera_id'); // Obtener carrera_id de la query string
+
+        if (!$carreraId) {
+            return response()->json([], 200);
+        }
+
+        // Consultar las materias filtrando por carrera_id
+        $materias = Materia::where('carrera_id', $carreraId)->get();
+
+        return response()->json($materias);
     }
 }
