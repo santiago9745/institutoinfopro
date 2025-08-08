@@ -23,7 +23,6 @@ import Grid from "@mui/material/Grid";
 import MDBox from "components/MDBox";
 
 // Material Dashboard 2 React example components
-import DefaultNavbar from "examples/Navbars/DefaultNavbar";
 import PageLayout from "examples/LayoutContainers/PageLayout";
 
 // Authentication pages components
@@ -36,14 +35,6 @@ function BasicLayout({ image, children }) {
 
   return (
     <PageLayout>
-      <DefaultNavbar
-        action={{
-          type: "external",
-          route: "https://creative-tim.com/product/material-dashboard-react-laravel",
-          label: "free download",
-          color: "dark",
-        }}
-      />
       <MDBox
         sx={{ height: "auto", minHeight: "100vh" }}
         display="flex"
@@ -54,6 +45,9 @@ function BasicLayout({ image, children }) {
           position="absolute"
           width="100%"
           minHeight="100vh"
+          display="flex"
+          flexDirection="column"
+          justifyContent="space-between"
           sx={{
             backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
               image &&
@@ -73,9 +67,9 @@ function BasicLayout({ image, children }) {
             flexDirection="column"
             width="100%"
             justifyContent="center"
-            paddingTop="4em"
+            paddingTop="2em"
           >
-            <MDBox paddingBottom="3rem" sx={{ textAlign: "center" }}>
+            <MDBox paddingBottom="2rem" sx={{ textAlign: "center" }}>
               {pathname === "/auth/login" && (
                 <MDBox display="flex" width="100%" justifyContent="center" sx={{ zIndex: "99" }}>
                   <MDBox
@@ -100,7 +94,7 @@ function BasicLayout({ image, children }) {
                   </MDBox>
                 </MDBox>
               )}
-              <MDBox px={1} width="100%" mx="auto" paddingTop="1rem">
+              <MDBox px={1} width="100%" mx="auto">
                 <Grid container spacing={1} justifyContent="center" alignItems="center">
                   <Grid item xs={11} sm={9} md={5} lg={4} xl={3}>
                     {children}

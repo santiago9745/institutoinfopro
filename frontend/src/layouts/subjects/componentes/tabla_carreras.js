@@ -11,6 +11,12 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import CircularProgress from '@mui/material/CircularProgress';
 import { updateResource } from './CRUD';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Tooltip from '@mui/material/Tooltip';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 const style = {
   position: 'absolute',
@@ -44,8 +50,8 @@ export default function CarrerasList() {
     modalidad: '',
     horario: '',
     fecha_inicio: '',
-    promo_matricula: '',
-    promo_mensualidad: '',
+    matricula: '',
+    mensualidad: '',
     incluye_texto: 0,
   });
 
@@ -82,8 +88,17 @@ export default function CarrerasList() {
 
   // Modal carreras (editar o crear)
   const handleOpenCarreraModal = (carrera = null) => {
+    setErrores({});
+    setMensajeError("");
     if (carrera) {
-      setEditCarrera(carrera);
+      const fecha = carrera.fecha_inicio
+      ? new Date(carrera.fecha_inicio).toISOString().split("T")[0]
+      : "";
+
+    setEditCarrera({
+      ...carrera,
+      fecha_inicio: fecha,
+    });
     } else {
       setEditCarrera({
         id: '',
@@ -92,9 +107,10 @@ export default function CarrerasList() {
         duracion: '',
         modalidad: '',
         horario: '',
-        fecha_inicio: '',
-        promo_matricula: '',
-        promo_mensualidad: '',
+        estado: carrera.estado !== undefined ? carrera.estado : 1,
+        fecha_inicio: '',     
+        matricula: '',
+        mensualidad: '',
         incluye_texto: 0,
       });
     }
@@ -151,19 +167,19 @@ export default function CarrerasList() {
     nuevosErrores.fecha_inicio = "Fecha de inicio inválida.";
   }
 
-  // promo_matricula (opcional)
-  if (editCarrera.promo_matricula !== '' && editCarrera.promo_matricula !== null) {
-    const val = Number(editCarrera.promo_matricula);
+  // matricula (opcional)
+  if (editCarrera.matricula !== '' && editCarrera.matricula !== null) {
+    const val = Number(editCarrera.matricula);
     if (isNaN(val) || val < 0) {
-      nuevosErrores.promo_matricula = "Promo matrícula debe ser un número positivo.";
+      nuevosErrores.matricula = "La matrícula debe ser un número positivo.";
     }
   }
 
   // promo_mensualidad (opcional)
-  if (editCarrera.promo_mensualidad !== '' && editCarrera.promo_mensualidad !== null) {
-    const val = Number(editCarrera.promo_mensualidad);
+  if (editCarrera.mensualidad !== '' && editCarrera.mensualidad !== null) {
+    const val = Number(editCarrera.mensualidad);
     if (isNaN(val) || val < 0) {
-      nuevosErrores.promo_mensualidad = "Promo mensualidad debe ser un número positivo.";
+      nuevosErrores.mensualidad = "Promo mensualidad debe ser un número positivo.";
     }
   }
 
@@ -191,7 +207,33 @@ export default function CarrerasList() {
     setMensajeError("Error al guardar la carrera. Intente nuevamente.");
   }
 };
+const handleDeleteCarrera = async (id) => {
+  const confirmacion = window.confirm("¿Estás seguro de que deseas eliminar esta carrera?\nEsto también eliminará todas las materias asociadas.");
 
+  if (!confirmacion) return;
+  
+  try {
+    const response = await fetch(`http://localhost:8000/api/carreras/${id}/eliminar`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ estado: 0 }), 
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al eliminar la carrera");
+    }
+
+    alert("Carrera y sus materias asociadas eliminadas con éxito.");
+    window.location.reload(); // Recarga la página
+
+  } catch (error) {
+    console.error("Error eliminando carrera:", error);
+    alert("Hubo un error al eliminar la carrera.");
+  }
+};
 
   // Nuevo: función para abrir modal de materias y cargar materias de la carrera
   const handleVerMateriasModal = async (carreraId) => {
@@ -232,18 +274,37 @@ export default function CarrerasList() {
       Header: "Acciones",
       Cell: ({ row }) => {
         return (
-          <>
-            <MDButton color="info" size="small" onClick={() => handleOpenCarreraModal(row.original)}>
-              Editar
-            </MDButton>
+         <Box sx={{ display: "flex", gap: 1 }}>
+          <Tooltip title="Editar">
             <MDButton
               color="info"
-              size="small"
+              size="medium"
+              onClick={() => handleOpenCarreraModal(row.original)}
+            >
+              <EditIcon sx={{ fontSize: 28 }} />
+            </MDButton>
+          </Tooltip>
+
+          <Tooltip title="Ver Materias">
+            <MDButton
+              color="secondary"
+              size="medium"
               onClick={() => handleVerMateriasModal(row.original.id)}
             >
-              Ver Materias
+              <MenuBookIcon sx={{ fontSize: 28 }} />
             </MDButton>
-          </>
+          </Tooltip>
+
+          <Tooltip title="Eliminar">
+            <MDButton
+              color="error"
+              size="medium"
+              onClick={() => handleDeleteCarrera(row.original.id)}
+            >
+              <DeleteIcon sx={{ fontSize: 28 }} />
+            </MDButton>
+          </Tooltip>
+        </Box>
         );
       },
     },
@@ -297,9 +358,24 @@ export default function CarrerasList() {
           <TextField label="Modalidad" name="modalidad" fullWidth value={editCarrera.modalidad} onChange={handleChange} error={!!errores.modalidad} helperText={errores.modalidad || ""} />
           <TextField label="Horario" name="horario" fullWidth value={editCarrera.horario} onChange={handleChange} error={!!errores.horario} helperText={errores.horario || ""} />
           <TextField label="Fecha de Inicio" name="fecha_inicio" type="date" fullWidth value={editCarrera.fecha_inicio} onChange={handleChange} InputLabelProps={{ shrink: true }} error={!!errores.fecha_inicio} helperText={errores.fecha_inicio || ""} />
-          <TextField label="Promo Matrícula" name="promo_matricula" type="number" fullWidth value={editCarrera.promo_matricula} onChange={handleChange} error={!!errores.promo_matricula} helperText={errores.promo_matricula || ""}/>
-          <TextField label="Promo Mensualidad" name="promo_mensualidad" type="number" fullWidth value={editCarrera.promo_mensualidad} onChange={handleChange} error={!!errores.promo_mensualidad} helperText={errores.promo_mensualidad || ""}/>
-          <TextField label="Incluye Texto (1 o 0)" name="incluye_texto" type="number" fullWidth value={editCarrera.incluye_texto} onChange={handleChange} error={!!errores.incluye_texto} helperText={errores.incluye_texto || ""}/>
+          <TextField label="Matrícula" name="matricula" type="number" fullWidth value={editCarrera.matricula} onChange={handleChange} error={!!errores.matricula} helperText={errores.matricula || ""}/>
+          <TextField label="Mensualidad" name="mensualidad" type="number" fullWidth value={editCarrera.mensualidad} onChange={handleChange} error={!!errores.mensualidad} helperText={errores.mensualidad || ""}/>
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="incluye_texto"
+                checked={!!editCarrera.incluye_texto}
+                onChange={handleChange}
+                color="primary"
+              />
+            }
+            label="Incluye material textual (libros, apuntes, etc.)"
+          />
+          {errores.incluye_texto && (
+            <Typography variant="caption" color="error">
+              {errores.incluye_texto}
+            </Typography>
+          )}
 
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
             <MDButton color="info" onClick={handleSave}>

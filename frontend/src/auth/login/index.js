@@ -1,34 +1,21 @@
 import { useContext, useState } from "react";
-
-// react-router-dom components
-import { Link } from "react-router-dom";
-
-// @mui material components
+import { Link, useNavigate } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
 import MuiLink from "@mui/material/Link";
-
-// @mui icons
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
-
-// Authentication layout components
-import BasicLayoutLanding from "layouts/authentication/components/BasicLayoutLanding";
-
-// Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
-
 import AuthService from "services/auth-service";
 import { AuthContext } from "context";
-import { useNavigate } from "react-router-dom";
+import CircularProgress from "@mui/material/CircularProgress";
+import CoverLayout from "layouts/authentication/components/CoverLayout";
 
 function Login() {
   const authContext = useContext(AuthContext);
@@ -48,9 +35,7 @@ function Login() {
   });
 
   const addUserHandler = (newUser) => setUser(newUser);
-
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
-
   const changeHandler = (e) => {
     setInputs({
       ...inputs,
@@ -58,19 +43,23 @@ function Login() {
     });
   };
 
+  const [loading, setLoading] = useState(false);
+
   const submitHandler = async (e) => {
-    // check rememeber me?
     e.preventDefault();
+    setLoading(true);
 
     const mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     if (inputs.email.trim().length === 0 || !inputs.email.trim().match(mailFormat)) {
       setErrors({ ...errors, emailError: true });
+      setLoading(false);
       return;
     }
 
     if (inputs.password.trim().length < 6) {
       setErrors({ ...errors, passwordError: true });
+      setLoading(false);
       return;
     }
 
@@ -94,62 +83,28 @@ function Login() {
       } else {
         setCredentialsError(res.errors[0].detail);
       }
+    } finally {
+      setLoading(false);
     }
-
-    return () => {
-      setInputs({
-        email: "",
-        password: "",
-      });
-
-      setErrors({
-        emailError: false,
-        passwordError: false,
-      });
-    };
   };
 
+  // Color rojo del logo
+  const primaryRed = "#D32F2F";
+
   return (
-    <BasicLayoutLanding image={bgImage}>
-      <Card>
-        <MDBox
-          variant="gradient"
-          bgColor="info"
-          borderRadius="lg"
-          coloredShadow="info"
-          mx={2}
-          mt={-3}
-          p={2}
-          mb={1}
-          textAlign="center"
-        >
-          <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Sign in
-          </MDTypography>
-          <Grid container spacing={3} justifyContent="center" sx={{ mt: 1, mb: 2 }}>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <FacebookIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GitHubIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-            <Grid item xs={2}>
-              <MDTypography component={MuiLink} href="#" variant="body1" color="white">
-                <GoogleIcon color="inherit" />
-              </MDTypography>
-            </Grid>
-          </Grid>
-        </MDBox>
+    <CoverLayout coverHeight="45vh" image={bgImage}>
+      <Card sx={{ border: `3px solid ${primaryRed}`, padding: 2 }}>
+        <MDTypography variant="h4" fontWeight="medium" color="text" mt={2}>
+          Iniciar sesión
+        </MDTypography>
+
+
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form" method="POST" onSubmit={submitHandler}>
-            <MDBox mb={2}>
+            <MDBox mb={4}>
               <MDInput
                 type="email"
-                label="Email"
+                label="Correo electrónico"
                 fullWidth
                 value={inputs.email}
                 name="email"
@@ -157,10 +112,10 @@ function Login() {
                 error={errors.emailError}
               />
             </MDBox>
-            <MDBox mb={2}>
+            <MDBox mb={1}>
               <MDInput
                 type="password"
-                label="Password"
+                label="Contraseña"
                 fullWidth
                 name="password"
                 value={inputs.password}
@@ -168,8 +123,9 @@ function Login() {
                 error={errors.passwordError}
               />
             </MDBox>
+
             <MDBox display="flex" alignItems="center" ml={-1}>
-              <Switch checked={rememberMe} onChange={handleSetRememberMe} />
+              <Switch checked={rememberMe} onChange={handleSetRememberMe} sx={{ color: primaryRed }} />
               <MDTypography
                 variant="button"
                 fontWeight="regular"
@@ -177,53 +133,50 @@ function Login() {
                 onClick={handleSetRememberMe}
                 sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
               >
-                &nbsp;&nbsp;Remember me
+                &nbsp;&nbsp;Recordarme
               </MDTypography>
             </MDBox>
-            <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
-                sign in
+
+            <MDBox mt={1} mb={1}>
+              <MDButton
+                variant="gradient"
+                sx={{
+                  backgroundColor: primaryRed,
+                  color: "#fff",
+                  "&:hover": { backgroundColor: "#b71c1c" },
+                }}
+                fullWidth
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? <CircularProgress size={24} color="inherit" /> : "Entrar"}
               </MDButton>
             </MDBox>
+
             {credentialsErros && (
               <MDTypography variant="caption" color="error" fontWeight="light">
                 {credentialsErros}
               </MDTypography>
             )}
-            <MDBox mt={3} mb={1} textAlign="center">
+
+            <MDBox mt={3} textAlign="center">
               <MDTypography variant="button" color="text">
-                Forgot your password? Reset it{" "}
+                ¿Olvidaste tu contraseña? Recuperar{" "}
                 <MDTypography
                   component={Link}
                   to="/auth/forgot-password"
                   variant="button"
-                  color="info"
-                  fontWeight="medium"
+                  sx={{ color: primaryRed, fontWeight: "medium" }}
                   textGradient
                 >
-                  here
-                </MDTypography>
-              </MDTypography>
-            </MDBox>
-            <MDBox mb={1} textAlign="center">
-              <MDTypography variant="button" color="text">
-                Don&apos;t have an account?{" "}
-                <MDTypography
-                  component={Link}
-                  to="/auth/register"
-                  variant="button"
-                  color="info"
-                  fontWeight="medium"
-                  textGradient
-                >
-                  Sign up
+                  aquí
                 </MDTypography>
               </MDTypography>
             </MDBox>
           </MDBox>
         </MDBox>
       </Card>
-    </BasicLayoutLanding>
+    </CoverLayout>
   );
 }
 

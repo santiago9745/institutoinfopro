@@ -6,6 +6,9 @@ import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import { updateResource } from './CRUD'; // Asegúrate de que esta ruta sea correcta
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Tooltip from '@mui/material/Tooltip';
 
 const style = {
   position: 'absolute',
@@ -30,6 +33,31 @@ export default function MateriasList() {
   const [editMateria, setEditMateria] = useState({ id: '', codigo: '', asignatura: '', semestre: '', horas: '', carreras: ''});
   const [errores, setErrores] = useState({});
   const [selectedMateria, setSelectedMateria] = useState(null);
+
+  const handleDeleteMateria = async (id) => {
+    const confirmacion = window.confirm("¿Estás seguro de que deseas eliminar esta materia?");
+    if (!confirmacion) return;
+    const token = sessionStorage.getItem("access_token");
+    try {
+      const response = await fetch(`http://localhost:8000/api/v2/materias/${id}/eliminar-logico`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+
+      if (!response.ok) throw new Error("Error al eliminar la materia");
+
+      alert("Materia eliminada con éxito.");
+      window.location.reload();
+
+    } catch (error) {
+      console.error("Error eliminando materia:", error);
+      alert("Hubo un error al eliminar la materia.");
+    }
+  };
 
   const fetchMaterias = () => {
     setLoading(true);
@@ -188,13 +216,31 @@ export default function MateriasList() {
     { Header: "Horas", accessor: "horas" },
     {
       Header: "Acciones",
-      Cell: ({ row }) => (
-        <MDButton color="info" size="small" onClick={() => handleOpen(row.original)}>
-          Actualizar
-        </MDButton>
-      ),
-      width: "100px",
-      align: "center",
+      Cell: ({ row }) => {
+        return (
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Tooltip title="Editar">
+              <MDButton
+                color="info"
+                size="medium"
+                onClick={() => handleOpen(row.original)}
+              >
+                <EditIcon sx={{ fontSize: 28 }} />
+              </MDButton>
+            </Tooltip>
+
+            <Tooltip title="Eliminar">
+              <MDButton
+                color="error"
+                size="medium"
+                onClick={() => handleDeleteMateria(row.original.id)}
+              >
+                <DeleteIcon sx={{ fontSize: 28 }} />
+              </MDButton>
+            </Tooltip>
+          </Box>
+        );
+      },
     },
   ];
 

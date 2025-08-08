@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('asignatura', 150);
             $table->unsignedTinyInteger('semestre');
             $table->integer('horas');
+            $table->tinyInteger('estado')->default(1)->comment('0=Inactivo, 1=Activo');
             $table->timestamps();
         });
     }

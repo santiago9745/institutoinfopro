@@ -12,7 +12,7 @@ class MateriaController extends Controller
      */
     public function index()
     {
-        return response()->json(Materia::all());
+        return response()->json(Materia::where('estado', 1)->get());
     }
 
     /**
@@ -84,8 +84,14 @@ class MateriaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $materia = Materia::find($id);
+        if (!$materia) {
+            return response()->json(['message'=>'Materia no encontrada'],404);
+        }
+        $materia->estado=0;
+        $materia->save();
+        return response()->json(['message'=>'Materia eliminada correctamente']);
     }
 }

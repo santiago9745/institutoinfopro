@@ -13,13 +13,18 @@ class Carrera extends Model
         'modalidad',
         'horario',
         'fecha_inicio',
-        'promo_matricula',
-        'promo_mensualidad',
+        'matricula',
+        'mensualidad',
         'incluye_texto',
+        'estado'
     ];
 
     public function inscripciones()
     {
         return $this->hasMany(Inscripcion::class);
+    }
+    public function materias()
+    {
+        return $this->hasMany(Materia::class, 'carrera_id');
     }
 }

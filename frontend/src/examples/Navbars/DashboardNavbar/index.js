@@ -147,7 +147,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
             <MDBox pr={1}>
-              <MDInput label="Search here" />
+              <MDInput label="Busca aqui" />
             </MDBox>
             <MDBox display="flex" alignItems="center" color={light ? "white" : "inherit"}>
               <Link to="/authentication/sign-in/basic">
@@ -196,7 +196,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                   type="button"
                   onClick={handleLogOut}
                 >
-                  Log Out
+                  Cerrar session
                 </MDButton>
               </MDBox>
             </MDBox>

@@ -19,9 +19,10 @@ return new class extends Migration
             $table->string('modalidad', 50)->nullable();
             $table->string('horario', 100)->nullable();
             $table->timestamp('fecha_inicio')->nullable();
-            $table->decimal('promo_matricula', 10, 2)->nullable();
-            $table->decimal('promo_mensualidad', 10, 2)->nullable();
+            $table->decimal('matricula', 10, 2)->nullable();
+            $table->decimal('mensualidad', 10, 2)->nullable();
             $table->boolean('incluye_texto')->default(false);
+            $table->tinyInteger('estado')->default(1)->comment('0=Inactivo, 1=Activo');
             $table->timestamps();
         });
     }
