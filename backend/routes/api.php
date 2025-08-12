@@ -67,3 +67,5 @@ Route::prefix('v2')->group(function () {
     Route::get('/estudiantes-inscritos', [EstudianteController::class, 'listadoEstudiantes']);
 });
 Route::post('/inscripciones', [EstudianteController::class, 'store']);
+Route::put('/inscripciones/{id}', [EstudianteController::class, 'update']);
+ Route::put('estudiante/{id}/eliminar-logico', [EstudianteController::class, 'delete']);

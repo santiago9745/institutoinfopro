@@ -9,7 +9,11 @@ import Grid from '@mui/material/Grid';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Tooltip from '@mui/material/Tooltip';
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 
 const style = {
@@ -29,6 +33,7 @@ const style = {
 export default function EstudiantesInscritos() {
   const [estudiantes, setEstudiantes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [open, setOpen] = useState(false);
   const [carreras, setCarreras] = useState([]);
   const steps = ['Datos del Estudiante', 'Datos de Inscripción', 'Datos de Pago'];
@@ -41,7 +46,6 @@ export default function EstudiantesInscritos() {
 };
   const [editEstudiante, setEditEstudiante] = useState({
    id: '', // id de inscripción (si edita)
-    usuario_id: '', // se usa si edita
 
     // Datos del usuario (nuevo)
     name: '',
@@ -61,6 +65,15 @@ export default function EstudiantesInscritos() {
     monto_pago: '',
     concepto_pago: '',
     fecha_pago: '',
+    //datos del perfil estudiante
+    institucion:'',
+    celular_referencia:'',
+    referencia_nombre:'',
+    referencia_relacion:'',
+    como_se_entero:'',
+    responsable_inscripcion:'',
+    observaciones:'',
+    a_nombre_factura:'',
   });
 
 
@@ -87,8 +100,6 @@ export default function EstudiantesInscritos() {
       newErrors.email = "El email es obligatorio";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editEstudiante.email))
       newErrors.email = "Email inválido";
-    if (!editEstudiante.password || editEstudiante.password.trim().length < 6)
-      newErrors.password = "La contraseña debe tener al menos 6 caracteres";
   }
 
   if (step === 2) {
@@ -101,7 +112,40 @@ export default function EstudiantesInscritos() {
       !["activo", "inactivo"].includes(editEstudiante.estado)
     )
       newErrors.estado = "Estado inválido";
-  }
+       if (!editEstudiante.institucion || !["INFOPRO", "CLADECORP"].includes(editEstudiante.institucion))
+    newErrors.institucion = "Debe seleccionar una institución válida";
+
+    if (!editEstudiante.celular_referencia || editEstudiante.celular_referencia.trim() === "")
+      newErrors.celular_referencia = "El celular de referencia es obligatorio";
+    else if (editEstudiante.celular_referencia.length > 20)
+      newErrors.celular_referencia = "Máximo 20 caracteres";
+
+    if (!editEstudiante.referencia_nombre || editEstudiante.referencia_nombre.trim() === "")
+      newErrors.referencia_nombre = "El nombre de referencia es obligatorio";
+    else if (editEstudiante.referencia_nombre.length > 100)
+      newErrors.referencia_nombre = "Máximo 100 caracteres";
+
+    if (!editEstudiante.referencia_relacion || editEstudiante.referencia_relacion.trim() === "")
+      newErrors.referencia_relacion = "La relación con la referencia es obligatoria";
+    else if (editEstudiante.referencia_relacion.length > 50)
+      newErrors.referencia_relacion = "Máximo 50 caracteres";
+
+    if (editEstudiante.como_se_entero && editEstudiante.como_se_entero.trim() === "")
+      newErrors.como_se_entero = "El campo 'Cómo se enteró' no puede estar vacío";
+
+    if (!editEstudiante.responsable_inscripcion || editEstudiante.responsable_inscripcion.trim() === "")
+      newErrors.responsable_inscripcion = "El responsable de inscripción es obligatorio";
+    else if (editEstudiante.responsable_inscripcion.length > 100)
+      newErrors.responsable_inscripcion = "Máximo 100 caracteres";
+
+    if (editEstudiante.observaciones && editEstudiante.observaciones.trim() === "")
+      newErrors.observaciones = "Si ingresa observaciones, no pueden estar vacías";
+
+    if (!editEstudiante.a_nombre_factura || editEstudiante.a_nombre_factura.trim() === "")
+      newErrors.a_nombre_factura = "Debe ingresar el nombre para la factura";
+    else if (editEstudiante.a_nombre_factura.length > 100)
+      newErrors.a_nombre_factura = "Máximo 100 caracteres";
+    }
 
   if (step === 3) {
     const hayMonto = editEstudiante.monto_pago !== undefined && editEstudiante.monto_pago !== null && editEstudiante.monto_pago !== "";
@@ -115,7 +159,7 @@ export default function EstudiantesInscritos() {
         newErrors.fecha_pago = "Debe ingresar una fecha de pago";
     }
   }
-
+  console.log("Errores en validación:", newErrors);
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 };
@@ -141,6 +185,7 @@ export default function EstudiantesInscritos() {
     .then(data => {
       setEstudiantes(data); // Asegúrate de tener este estado definido
       setLoading(false);
+      console.log(data);
     })
     .catch(err => {
       console.error("Error al cargar estudiantes:", err);
@@ -183,32 +228,68 @@ useEffect(() => {
 }, []);
 
   const handleOpen = (estudiante) => {
-    if(estudiante) {
+    if (estudiante) {
       setEditEstudiante({
-        id: estudiante.id,
-        usuario_id: estudiante.usuario_id,
-        carrera_id: estudiante.carrera_id,
-        fecha_inscripcion: estudiante.fecha_inscripcion,
-        estado: estudiante.estado
+        id: estudiante.id || '',
+        name: estudiante.name || '',
+        apellido_paterno: estudiante.apellido_paterno || '',
+        apellido_materno: estudiante.apellido_materno || '',
+        ci: estudiante.ci || '',
+        expedido: estudiante.expedido || '',
+        celular: estudiante.celular || '',
+        email: estudiante.email || '',
+        password: '', // no llenar contraseña al editar, usuario la puede cambiar si quiere
+        carrera_id: estudiante.carrera_id || '',
+        fecha_inscripcion: estudiante.fecha_inscripcion || '',
+        estado: estudiante.estado_inscripcion || 'activo',
+        monto_pago: estudiante.monto_pago || '',
+        concepto_pago: estudiante.concepto_pago || '',
+        fecha_pago: estudiante.fecha_pago || '',
+        institucion: estudiante.institucion || '',
+        celular_referencia: estudiante.celular_referencia || '',
+        referencia_nombre: estudiante.referencia_nombre || '',
+        referencia_relacion: estudiante.referencia_relacion || '',
+        como_se_entero: estudiante.como_se_entero || '',
+        responsable_inscripcion: estudiante.responsable_inscripcion || '',
+        observaciones: estudiante.observaciones || '',
+        a_nombre_factura: estudiante.a_nombre_factura || '',
       });
     } else {
       setEditEstudiante({
         id: '',
-        usuario_id: '',
+        name: '',
+        apellido_paterno: '',
+        apellido_materno: '',
+        ci: '',
+        expedido: '',
+        celular: '',
+        email: '',
+        password: '',
         carrera_id: '',
         fecha_inscripcion: '',
-        estado: ''
+        estado: 'activo',
+        monto_pago: '',
+        concepto_pago: '',
+        fecha_pago: '',
+        institucion:'',
+        celular_referencia:'',
+        referencia_nombre:'',
+        referencia_relacion:'',
+        como_se_entero:'',
+        responsable_inscripcion:'',
+        observaciones:'',
+        a_nombre_factura:'',
       });
     }
     setErrors({});
     setStep(1);
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
     setEditEstudiante({
       id: '',
-      usuario_id: '',
       carrera_id: '',
       fecha_inscripcion: '',
       estado: ''
@@ -216,26 +297,88 @@ useEffect(() => {
   };
 
   const handleChange = (e) => {
-    setEditEstudiante({ ...editEstudiante, [e.target.name]: e.target.value });
-  };
+  const { name, value } = e.target;
+
+  // Si el campo que cambia es carrera_id
+  if (name === "carrera_id") {
+    const carreraSeleccionada = carreras.find(c => c.id === parseInt(value));
+
+    setEditEstudiante(prev => ({
+      ...prev,
+      carrera_id: value,
+      institucion: carreraSeleccionada ? carreraSeleccionada.institucion : ""
+    }));
+  } else {
+    // Para cualquier otro campo
+    setEditEstudiante(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  }
+};
+
+  const handleDeleteEstudiante = async (id) => {
+  const confirmacion = window.confirm("¿Estás seguro de que deseas eliminar este estudiante?");
+  if (!confirmacion) return;
+  const token = sessionStorage.getItem("access_token");
+  try {
+    const response = await fetch(`http://localhost:8000/api/estudiante/${id}/eliminar-logico`, {
+      method: "PUT", // o "DELETE" si usas delete lógico con DELETE
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) throw new Error("Error al eliminar el estudiante");
+
+    alert("Estudiante eliminado con éxito.");
+    window.location.reload();
+
+  } catch (error) {
+    console.error("Error eliminando estudiante:", error);
+    alert("Hubo un error al eliminar el estudiante.");
+  }
+};
 
 const handleSaveEstudiante = async () => {
+  setIsSaving(true);  
   try {
-    const token = sessionStorage.getItem("access_token"); 
-    const response = await fetch(`http://localhost:8000/api/inscripciones`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`,},
+    const token = sessionStorage.getItem("access_token");
+    
+    // Detecta si estás editando (si editEstudiante.id tiene valor)
+    const url = editEstudiante.id
+      ? `http://localhost:8000/api/inscripciones/${editEstudiante.id}`
+      : "http://localhost:8000/api/inscripciones";
+    const method = editEstudiante.id ? "PUT" : "POST";
+console.log(JSON.stringify(editEstudiante));
+
+    // Enviar todo el objeto, incluida la contraseña (vacía si no cambia)
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(editEstudiante),
     });
 
-    if (!response.ok) throw new Error("Error al registrar al estudiante");
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.message || "Error al guardar la inscripción");
+    }
 
     fetchEstudiantes();
     handleClose();
   } catch (error) {
-    console.error("Fallo al guardar estudiante:", error);
+    console.error("Fallo al guardar inscripción:", error);
+    // Aquí podrías mostrar un mensaje al usuario con el error
+  }finally {
+    setIsSaving(false);  // termina carga
   }
 };
+
 
   const columns = [
     { Header: "ID", accessor: "id" }, 
@@ -256,11 +399,22 @@ const handleSaveEstudiante = async () => {
     { Header: "Estado", accessor: "estado_inscripcion" },
     {
       Header: "Acciones",
-      Cell: ({ row }) => (
-        <MDButton color="info" size="small" onClick={() => handleOpen(row.original)}>
-          Editar
-        </MDButton>
-      ),
+      Cell: ({ row }) => {
+        return(
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Tooltip title="Editar">
+              <MDButton color="info" size="medium" onClick={() => handleOpen(row.original)}>
+              <EditIcon sx={{ fontSize: 28 }} />
+              </MDButton>
+            </Tooltip>
+            <Tooltip title="Elimnar">
+              <MDButton color="error" size="medium" onClick={() => handleDeleteEstudiante(row.original.id)}>
+                <DeleteIcon sx={{ fontSize: 28}} />
+              </MDButton>
+            </Tooltip>
+          </Box>
+        );
+      },
       width: "100px",
       align: "center",
     },
@@ -374,6 +528,15 @@ const handleSaveEstudiante = async () => {
                 </Grid>
                 <Grid item xs={6}>
                   <TextField
+                    label="Instituto"
+                    fullWidth
+                    name="institucion"
+                    value={editEstudiante.institucion}
+                    InputProps={{ readOnly: true }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
                     type="date"
                     label="Fecha Inscripción"
                     fullWidth
@@ -384,6 +547,83 @@ const handleSaveEstudiante = async () => {
                     error={Boolean(errors.fecha_inscripcion)}
                     helperText={errors.fecha_inscripcion}
                   />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    label="Celular de referencia"
+                    fullWidth
+                    name="celular_referencia"
+                    value={editEstudiante.celular_referencia}
+                    onChange={handleChange}
+                    error={Boolean(errors.celular_referencia)}
+                    helperText={errors.celular_referencia}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    label="Nombre de referencia"
+                    fullWidth
+                    name="referencia_nombre"
+                    value={editEstudiante.referencia_nombre}
+                    onChange={handleChange}
+                    error={Boolean(errors.referencia_nombre)}
+                    helperText={errors.referencia_nombre}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    label="Relacion con la persona"
+                    fullWidth
+                    name="referencia_relacion"
+                    value={editEstudiante.referencia_relacion}
+                    onChange={handleChange}
+                    error={Boolean(errors.referencia_relacion)}
+                    helperText={errors.referencia_relacion}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                      label="Como se entero"
+                      fullWidth
+                      name="como_se_entero"
+                      value={editEstudiante.como_se_entero}
+                      onChange={handleChange}
+                      error={Boolean(errors.como_se_entero)}
+                      helperText={errors.como_se_entero}
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                      label="Responsable de la inscripcion"
+                      fullWidth
+                      name="responsable_inscripcion"
+                      value={editEstudiante.responsable_inscripcion}
+                      onChange={handleChange}
+                      error={Boolean(errors.fecha_inscripcion)}
+                      helperText={errors.fecha_inscripcion}
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                      label="Observaciones"
+                      fullWidth
+                      name="observaciones"
+                      value={editEstudiante.observaciones}
+                      onChange={handleChange}
+                      error={Boolean(errors.observaciones)}
+                      helperText={errors.observaciones}
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                      label="Nombre para la factura"
+                      fullWidth
+                      name="a_nombre_factura"
+                      value={editEstudiante.a_nombre_factura}
+                      onChange={handleChange}
+                      error={Boolean(errors.a_nombre_factura)}
+                      helperText={errors.a_nombre_factura}
+                    />
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
@@ -404,6 +644,7 @@ const handleSaveEstudiante = async () => {
                     <option value="finalizado">Finalizado</option>
                   </TextField>
                 </Grid>
+                
               </Grid>
             </>
           )}
@@ -503,14 +744,17 @@ const handleSaveEstudiante = async () => {
                     borderLeft: '1px solid rgba(255,255,255,0.3)', // línea divisoria
                   }}
                 >
-                  Guardar
+                  {isSaving ? (
+                    <CircularProgress size={24} color="inherit" />
+                  ) : (
+                    editEstudiante.id ? "Actualizar" : "Guardar"
+                  )}
                 </MDButton>
               )}
             </Box>
           </Box>
         </Box>
       </Modal>
-
     </div>
   );
 }

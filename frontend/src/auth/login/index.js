@@ -2,11 +2,6 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
-import Grid from "@mui/material/Grid";
-import MuiLink from "@mui/material/Link";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import GoogleIcon from "@mui/icons-material/Google";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
@@ -16,6 +11,9 @@ import AuthService from "services/auth-service";
 import { AuthContext } from "context";
 import CircularProgress from "@mui/material/CircularProgress";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
+import bgImage1 from "assets/images/baner-infopro.png";
+import bgImage2 from "assets/images/baner-cladecorp.png";
+import banner from "assets/images/baner2.jpg";
 
 function Login() {
   const authContext = useContext(AuthContext);

@@ -107,7 +107,7 @@ export default function CarrerasList() {
         duracion: '',
         modalidad: '',
         horario: '',
-        estado: carrera.estado !== undefined ? carrera.estado : 1,
+        estado: 1, // valor por defecto directamente
         fecha_inicio: '',     
         matricula: '',
         mensualidad: '',
@@ -186,6 +186,51 @@ export default function CarrerasList() {
   // incluye_texto (opcional)
   if (editCarrera.incluye_texto !== 0 && editCarrera.incluye_texto !== 1) {
     nuevosErrores.incluye_texto = "Incluye texto debe ser 0 o 1.";
+  }
+   // duracion: requerido, máx 50 caracteres
+  if (!editCarrera.duracion || editCarrera.duracion.trim() === "") {
+    nuevosErrores.duracion = "La duración es obligatoria";
+  } else if (editCarrera.duracion.length > 50) {
+    nuevosErrores.duracion = "Máximo 50 caracteres";
+  }
+
+  // modalidad: requerido, máx 50 caracteres
+  if (!editCarrera.modalidad || editCarrera.modalidad.trim() === "") {
+    nuevosErrores.modalidad = "La modalidad es obligatoria";
+  } else if (editCarrera.modalidad.length > 50) {
+    nuevosErrores.modalidad = "Máximo 50 caracteres";
+  }
+
+  // horario: requerido, máx 100 caracteres
+  if (!editCarrera.horario || editCarrera.horario.trim() === "") {
+    nuevosErrores.horario = "El horario es obligatorio";
+  } else if (editCarrera.horario.length > 100) {
+    nuevosErrores.horario = "Máximo 100 caracteres";
+  }
+
+  // matrícula: requerido, decimal positivo
+  if (editCarrera.matricula === "" || editCarrera.matricula === null) {
+    nuevosErrores.matricula = "La matrícula es obligatoria";
+  } else if (isNaN(editCarrera.matricula) || Number(editCarrera.matricula) < 0) {
+    nuevosErrores.matricula = "Debe ser un número positivo";
+  } else if (!/^\d+(\.\d{1,2})?$/.test(editCarrera.matricula)) {
+    nuevosErrores.matricula = "Máximo 2 decimales";
+  }
+
+  // mensualidad: requerido, decimal positivo
+  if (editCarrera.mensualidad === "" || editCarrera.mensualidad === null) {
+    nuevosErrores.mensualidad = "La mensualidad es obligatoria";
+  } else if (isNaN(editCarrera.mensualidad) || Number(editCarrera.mensualidad) < 0) {
+    nuevosErrores.mensualidad = "Debe ser un número positivo";
+  } else if (!/^\d+(\.\d{1,2})?$/.test(editCarrera.mensualidad)) {
+    nuevosErrores.mensualidad = "Máximo 2 decimales";
+  }
+
+  // incluye_texto: requerido, debe ser booleano o 0/1
+  if (editCarrera.incluye_texto === undefined || editCarrera.incluye_texto === null) {
+    nuevosErrores.incluye_texto = "Debe indicar si incluye texto";
+  } else if (![0, 1, true, false].includes(editCarrera.incluye_texto)) {
+    nuevosErrores.incluye_texto = "Valor inválido";
   }
 
   if (Object.keys(nuevosErrores).length > 0) {
@@ -355,7 +400,23 @@ const handleDeleteCarrera = async (id) => {
 
           <TextField label="Nombre" name="nombre" fullWidth value={editCarrera.nombre} onChange={handleChange} error={!!errores.nombre} helperText={errores.nombre || ""} />
           <TextField label="Duración" name="duracion" fullWidth value={editCarrera.duracion} onChange={handleChange} error={!!errores.duracion} helperText={errores.duracion || ""} />
-          <TextField label="Modalidad" name="modalidad" fullWidth value={editCarrera.modalidad} onChange={handleChange} error={!!errores.modalidad} helperText={errores.modalidad || ""} />
+          <TextField
+            select
+            label="Modalidad"
+            name="modalidad"
+            fullWidth
+            value={editCarrera.modalidad}
+            onChange={handleChange}
+            SelectProps={{ native: true }}
+            error={!!errores.modalidad}
+            helperText={errores.modalidad || ""}
+          >
+            <option value=""></option>
+            <option value="Presencial">Presencial</option>
+            <option value="Virtual">Virtual</option>
+            <option value="Mixta">Mixta</option>
+          </TextField>
+
           <TextField label="Horario" name="horario" fullWidth value={editCarrera.horario} onChange={handleChange} error={!!errores.horario} helperText={errores.horario || ""} />
           <TextField label="Fecha de Inicio" name="fecha_inicio" type="date" fullWidth value={editCarrera.fecha_inicio} onChange={handleChange} InputLabelProps={{ shrink: true }} error={!!errores.fecha_inicio} helperText={errores.fecha_inicio || ""} />
           <TextField label="Matrícula" name="matricula" type="number" fullWidth value={editCarrera.matricula} onChange={handleChange} error={!!errores.matricula} helperText={errores.matricula || ""}/>
@@ -369,7 +430,7 @@ const handleDeleteCarrera = async (id) => {
                 color="primary"
               />
             }
-            label="Incluye material textual (libros, apuntes, etc.)"
+            label="Incluye material textual (libros, apuntes, otros)"
           />
           {errores.incluye_texto && (
             <Typography variant="caption" color="error">
