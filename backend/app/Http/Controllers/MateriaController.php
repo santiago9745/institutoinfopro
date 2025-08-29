@@ -12,7 +12,7 @@ class MateriaController extends Controller
      */
     public function index()
     {
-        return response()->json(Materia::all());
+        return response()->json(Materia::where('estado', 1)->get());
     }
 
     /**
@@ -26,6 +26,7 @@ class MateriaController extends Controller
                 'asignatura' => 'required|string|max:150',
                 'semestre' => 'required|integer|min:1',
                 'horas' => 'required|integer|min:1',
+                'carrera_id' => 'required|exists:carreras,id',
             ]);
             $materia = Materia::create($request->all());
             return response()->json($materia,201);
@@ -63,6 +64,7 @@ class MateriaController extends Controller
                 'asignatura' => 'required|string|max:150',
                 'semestre' => 'required|integer|min:1',
                 'horas' => 'required|integer|min:1',
+                'carrera_id' => 'required|exists:carreras,id',
             ]);
             $materia->update($request->all());
             return response()->json($materia);
@@ -82,8 +84,14 @@ class MateriaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $materia = Materia::find($id);
+        if (!$materia) {
+            return response()->json(['message'=>'Materia no encontrada'],404);
+        }
+        $materia->estado=0;
+        $materia->save();
+        return response()->json(['message'=>'Materia eliminada correctamente']);
     }
 }

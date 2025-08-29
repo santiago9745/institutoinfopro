@@ -25,6 +25,8 @@ class Materia extends Model
         'asignatura',
         'semestre',
         'horas',
+        'estado',
+        'carrera_id',
     ];
 
 }

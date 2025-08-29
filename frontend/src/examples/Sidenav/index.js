@@ -94,7 +94,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           key={key}
           target="_blank"
           rel="noreferrer"
-          sx={{ textDecoration: "none" }}
+          sx={{ textDecoration: "none"}}
         >
           <SidenavCollapse
             name={name}
@@ -210,7 +210,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       <List>
         <MDBox display="flex flex-col" alignItems="center">
           <MDTypography color={textColor} variant="body2" fontWeight="medium" pl="1.5rem">
-            Menú
+            
           </MDTypography>
           {renderExampleRoutes}
         </MDBox>

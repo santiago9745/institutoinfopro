@@ -24,9 +24,12 @@ const Notas = () => {
                                 py={3}
                                 px={2}
                                 variant="gradient"
-                                bgColor="info"
                                 borderRadius="lg"
                                 coloredShadow="info"
+                                sx={{
+                                    background: "linear-gradient(45deg, #e60000, #ff3300)",
+                                    color: "white", // para que el texto se vea bien
+                                }}
                             >
                                 <MDTypography variant="h6" color="white">
                                     Listado de notas 

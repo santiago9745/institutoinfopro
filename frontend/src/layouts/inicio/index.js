@@ -1,32 +1,47 @@
-import React from "react";
-import { Link } from "react-router-dom";
-
-// MUI Components
+import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
-// Custom Components
+// Layout y componentes personalizados
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import MDTypography from "components/MDTypography";
 import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
 import Footer from "examples/Footer";
 
-// Imagen de bienvenida
-import bannerImage from "assets/images/baner-infopro.png";
+// Imágenes institucionales
+import infoproImage from "assets/images/baner-infopro.png";
+import cladecorpImage from "assets/images/baner-cladecorp.png";
+
+const imageList = [infoproImage, cladecorpImage];
 
 const Inicio = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % imageList.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleDotClick = (index) => {
+    setCurrentIndex(index);
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
 
       <MDBox pt={4} pb={6}>
         <Grid container spacing={3}>
-
-          {/* Título y subtítulo */}
+          {/* Título */}
           <Grid item xs={12}>
             <MDBox textAlign="center" px={2} py={1}>
               <MDTypography variant="h3" fontWeight="bold" color="primary" gutterBottom>
-                ¡Bienvenido al Sistema de Gestión Académica de INFOPRO!
+                ¡Bienvenido al Sistema Académico de INFOPRO y CLADECORP!
               </MDTypography>
               <MDTypography variant="h5" color="text" fontWeight="regular">
                 La tecnología y la educación se unen para brindarte una mejor experiencia.
@@ -34,41 +49,81 @@ const Inicio = () => {
             </MDBox>
           </Grid>
 
-          {/* Texto explicativo extendido */}
+          {/* Descripción */}
           <Grid item xs={12}>
             <MDBox px={4} py={1}>
               <MDTypography variant="body1" color="text" lineHeight={1.8}>
-                Este sistema fue desarrollado para facilitar y optimizar la administración académica del Instituto Tecnológico INFOPRO.
-                Permite registrar y gestionar estudiantes, docentes, materias, calificaciones y pagos de manera eficiente.
-                Su diseño intuitivo permite que tanto personal administrativo como docentes puedan trabajar con facilidad.
+                Este sistema unifica la gestión académica del{" "}
+                <strong>Instituto Tecnológico INFOPRO</strong> y del{" "}
+                <strong>Centro de Capacitación CLADECORP</strong>, ofreciendo una plataforma integral para
+                registrar estudiantes, administrar materias, controlar calificaciones, gestionar pagos y generar reportes.
               </MDTypography>
 
               <MDBox mt={2}>
                 <MDTypography variant="body1" color="text" lineHeight={1.8}>
-                  Explora el menú lateral para acceder a los diferentes módulos y comenzar a gestionar la información del instituto.
-                  Este sistema ha sido construido pensando en las necesidades reales del entorno educativo técnico-tecnológico.
+                  Utiliza el menú lateral o los accesos rápidos para comenzar a explorar las funcionalidades disponibles para ambas instituciones.
                 </MDTypography>
               </MDBox>
             </MDBox>
           </Grid>
 
-          {/* Imagen institucional */}
+          {/* Carrusel de imágenes */}
           <Grid item xs={12}>
-            <MDBox
-              component="img"
-              src={bannerImage}
-              alt="Inforpro"
+            <Box
               sx={{
+                position: "relative",
                 width: "100%",
-                maxWidth: "100%",
-                height: "auto",
                 borderRadius: "16px",
-                display: "block",
-                objectFit: "cover",
+                overflow: "hidden",
               }}
-            />
+            >
+              <Box
+                component="img"
+                src={imageList[currentIndex]}
+                alt={`Banner ${currentIndex}`}
+                sx={{
+                  width: "100%",
+                  height: "auto",
+                  objectFit: "cover",
+                  transition: "opacity 0.5s ease-in-out",
+                  display: "block",
+                }}
+              />
+              {/* Dots pequeños sobre la imagen */}
+              <Box
+                sx={{
+                  position: "absolute",
+                  bottom: 8,
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 2,
+                }}
+              >
+                {imageList.map((_, index) => (
+                  <IconButton
+                    key={index}
+                    onClick={() => handleDotClick(index)}
+                    sx={{
+                      color: index === currentIndex ? "white" : "grey.400",
+                      backgroundColor: index === currentIndex ? "primary.main" : "rgba(0,0,0,0.3)",
+                      mx: 0.4,
+                      p: 0.3,
+                      width: 18,
+                      height: 18,
+                      borderRadius: "50%",
+                      "&:hover": {
+                        backgroundColor: "primary.dark",
+                      },
+                    }}
+                  >
+                    <FiberManualRecordIcon sx={{ fontSize: 10 }} />
+                  </IconButton>
+                ))}
+              </Box>
+            </Box>
           </Grid>
-
         </Grid>
       </MDBox>
 

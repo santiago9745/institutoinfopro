@@ -15,6 +15,7 @@ return new class extends Migration
             $table->increments('id');
             $table->unsignedInteger('usuario_id');
             $table->foreign('usuario_id')->references('id')->on('users');
+            $table->string('codigo', 20)->unique();
             $table->enum('institucion', ['INFOPRO', 'CLADECORP']);
             $table->string('celular_referencia', 20)->nullable();
             $table->string('referencia_nombre', 100)->nullable();

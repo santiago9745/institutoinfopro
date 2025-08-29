@@ -10,6 +10,7 @@ class PerfilEstudiante extends Model
 
     protected $fillable = [
         'usuario_id',
+        'codigo',
         'institucion',
         'celular_referencia',
         'referencia_nombre',

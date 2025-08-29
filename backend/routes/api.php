@@ -40,6 +40,7 @@ Route::middleware('auth:api', 'json.api')->prefix('v2')->group(function () {
     Route::get('/materias', [MateriaController::class, 'index']);
     Route::post('/materias', [MateriaController::class, 'store']);
     Route::put('/materias/{id}', [MateriaController::class, 'update']);
+    Route::put('materias/{id}/eliminar-logico', [MateriaController::class, 'destroy']);
 });
 
 Route::get('/users', function () {
@@ -51,6 +52,9 @@ Route::put('/users/{id}', [UserController::class, 'update']);
 Route::get('/carreras', [CarreraController::class, 'index']);
 Route::post('carreras', [CarreraController::class, 'store']);   
 Route::put('carreras/{id}', [CarreraController::class, 'update']);
+Route::put('/carreras/{id}/eliminar', [CarreraController::class, 'destroy']);
+
+Route::get('/materias', [CarreraController::class, 'materias']);
 
 JsonApiRoute::server('v2')->prefix('v2')->resources(function (ResourceRegistrar $server) {
     $server->resource('users', JsonApiController::class);
@@ -62,3 +66,6 @@ JsonApiRoute::server('v2')->prefix('v2')->resources(function (ResourceRegistrar 
 Route::prefix('v2')->group(function () {
     Route::get('/estudiantes-inscritos', [EstudianteController::class, 'listadoEstudiantes']);
 });
+Route::post('/inscripciones', [EstudianteController::class, 'store']);
+Route::put('/inscripciones/{id}', [EstudianteController::class, 'update']);
+ Route::put('estudiante/{id}/eliminar-logico', [EstudianteController::class, 'delete']);
