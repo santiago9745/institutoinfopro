@@ -83,7 +83,7 @@ class EstudianteController extends Controller
                 'expedido' => $request->expedido,
                 'celular' => $request->celular,
                 'email' => $request->email,
-                'password' => bcrypt($passwordPlano),
+                'password' => $passwordPlano,
                 'rol' => 4, // estudiante
                 'estado' => 1
             ]);
@@ -92,6 +92,7 @@ class EstudianteController extends Controller
             PerfilEstudiante::create([
                 'usuario_id' => $usuario->id,
                 'institucion' => $request->institucion,
+                'codigo' => $request->codigo_estudiante,
                 'celular_referencia' => $request->celular_referencia,
                 'referencia_nombre' => $request->referencia_nombre,
                 'referencia_relacion' => $request->referencia_relacion,
@@ -106,7 +107,7 @@ class EstudianteController extends Controller
                 'usuario_id' => $usuario->id,
                 'carrera_id' => $request->carrera_id,
                 'fecha_inscripcion' => $request->fecha_inscripcion,
-                'estado' => $request->estado ?? 'activo',
+                'estado' => $request->estado ?? 'por_iniciar',
             ]);
 
             // 4. Crear cuota
@@ -168,7 +169,7 @@ class EstudianteController extends Controller
                 'password' => 'nullable|string|min:6',
                 'carrera_id' => 'required|integer|exists:carreras,id',
                 'fecha_inscripcion' => 'required|date',
-                'estado' => 'nullable|string',
+                'estado' => 'nullable|in:por_iniciar,activo,inactivo,abandonado,finalizado',
             ]);
 
             // 1. Actualizar Usuario
@@ -227,7 +228,7 @@ class EstudianteController extends Controller
     {
         $estudiante=User::find($id);
         if (!$estudiante) {
-            return respose()->json(['menssage'=>'EL estudiante no se pudo eliminar'],404);
+            return response()->json(['menssage'=>'EL estudiante no se pudo eliminar'],404);
         }
         $estudiante->estado=0;
         $estudiante->save();

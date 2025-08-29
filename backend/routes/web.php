@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/prueba-log', function () {
+    \Log::info('Prueba de log simple en ruta /prueba-log');
+    return 'Mensaje de log escrito';
+});
+

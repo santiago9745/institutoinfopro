@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedInteger('carrera_id');
             $table->foreign('carrera_id')->references('id')->on('carreras');
             $table->date('fecha_inscripcion');
-            $table->enum('estado', ['activo', 'retirado', 'reprobado', 'finalizado'])->default('activo');
+            $table->enum('estado', ['por_iniciar', 'activo', 'inactivo', 'abandonado', 'finalizado'])->default('por_iniciar');
             $table->timestamps();
         });
     }

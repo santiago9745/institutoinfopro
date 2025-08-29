@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -26,7 +27,6 @@ class LoginController extends Controller
         $user = User::where('email', $request->email)->first();
     
         if (!$user || !Hash::check($request->password, $user->password)) {
-            // Retorna un error controlado si el usuario no existe o la contraseña es incorrecta
             return Error::fromArray([
                 'title'  => 'Credenciales inválidas',
                 'detail' => 'El email o la contraseña son incorrectos.',
@@ -34,7 +34,6 @@ class LoginController extends Controller
             ]);
         }
     
-        // Si pasa la validación, sigue con la petición al oauth/token
         $client = DB::table('oauth_clients')->where('password_client', 1)->first();
     
         if (!$client) {
@@ -54,8 +53,10 @@ class LoginController extends Controller
             'scope'         => '',
         ]);
     
+
         $response = app()->handle($req);
-    
+            \Log::info('OAuth token response status: ' . $response->getStatusCode());
+        \Log::info('OAuth token response content: ' . $response->getContent());
         if ($response->getStatusCode() !== Response::HTTP_OK) {
             $content = json_decode($response->getContent(), true);
             return Error::fromArray([
@@ -65,6 +66,19 @@ class LoginController extends Controller
             ]);
         }
     
-        return $response;
+        $content = json_decode($response->getContent(), true);
+
+        return response()->json([
+            'access_token' => $content['access_token'],
+            'refresh_token' => $content['refresh_token'],
+            'token_type' => $content['token_type'],
+            'expires_in' => $content['expires_in'],
+            'user' => [
+                'id' => $user->id,
+                'email' => $user->email,
+                'rol' => $user->rol,     // Ajusta este campo según cómo tengas el rol en tu modelo
+                'name' => $user->name ?? $user->nombre,
+            ],
+        ], Response::HTTP_OK);
     }
 }
