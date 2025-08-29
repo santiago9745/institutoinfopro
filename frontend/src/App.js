@@ -119,28 +119,32 @@ export default function App() {
   }, [pathname]);
 
   const getRoutes = (allRoutes) =>
-    allRoutes.map((route) => {
-      if (route.collapse) {
-        return getRoutes(route.collapse);
-      }
+  allRoutes.map((route) => {
+    if (route.collapse) {
+      return getRoutes(route.collapse);
+    }
 
-      if (route.route && route.type !== "auth") {
-        return (
-          <Route
-            exact
-            path={route.route}
-            element={
-              <ProtectedRoute isAuthenticated={authContext.isAuthenticated}>
-                {route.component}
-              </ProtectedRoute>
-            }
-            key={route.key}
-          />
-        );
-      }
-      return null;
-    });
-
+    if (route.route && route.type !== "auth") {
+      return (
+        <Route
+          exact
+          path={route.route}
+          element={
+            <ProtectedRoute
+              isAuthenticated={authContext.isAuthenticated}
+              userRole={authContext.user?.rol} // si no hay, ProtectedRoute buscará en sessionStorage
+              allowedRoles={route.roles || []}
+            >
+              {route.component}
+            </ProtectedRoute>
+          }
+          key={route.key}
+        />
+      );
+    }
+    return null;
+  });
+  
   const configsButton = (
     <MDBox
       display="flex"

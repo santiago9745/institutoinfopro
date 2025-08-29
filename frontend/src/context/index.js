@@ -36,52 +36,55 @@ export const AuthContext = createContext({
   logout: () => {},
 });
 
-const AuthContextProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+const AuthContextProvider  = ({ children }) => {
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const accessToken = sessionStorage.getItem("access_token");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
 
-  // Cuando se monta el contexto, verificamos si hay token guardado
-  useEffect(() => {
-    if (!accessToken) return;
+  const login = (accessToken, refreshToken, userData) => {
 
-    setIsAuthenticated(true);
+    localStorage.setItem("access_token", accessToken);
+    localStorage.setItem("refresh_token", refreshToken);
+    localStorage.setItem("user", JSON.stringify(userData));
     axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-    navigate(location.pathname);
-  }, []);
-
-  // Si el estado de autenticación cambia, redireccionamos si hace falta
-  useEffect(() => {
-    if (!accessToken) {
-      navigate("/auth/login");
-      return;
-    }
-
-    setIsAuthenticated(true);
-    navigate(location.pathname);
-  }, [isAuthenticated]);
-
-  const login = (accessToken, refreshToken) => {
-    sessionStorage.setItem("access_token", accessToken);
-    sessionStorage.setItem("refresh_token", refreshToken);
-    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    setUser(userData);
     setIsAuthenticated(true);
     navigate("/dashboard");
   };
 
   const logout = () => {
-    sessionStorage.removeItem("access_token");
-    sessionStorage.removeItem("refresh_token");
-    delete axios.defaults.headers.common["Authorization"];
+    sessionStorage.clear();
+    setUser(null);
     setIsAuthenticated(false);
     navigate("/auth/login");
   };
 
+  const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  try {
+    const storedUserRaw = sessionStorage.getItem("user");
+    const accessToken = sessionStorage.getItem("access_token");
+
+    if (storedUserRaw && accessToken) {
+      const storedUser = JSON.parse(storedUserRaw);
+      setUser(storedUser);
+      setIsAuthenticated(true);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    }
+  } catch {
+    setUser(null);
+    setIsAuthenticated(false);
+  } finally {
+    setLoading(false);
+  }
+}, []);
+
+
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

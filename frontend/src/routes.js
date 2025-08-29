@@ -67,6 +67,7 @@ const routes = [
     icon: <Icon fontSize="small">home</Icon>,
     route: "/inicio",
     component: <Inicio />,
+    roles: [1, 2, 3, 4, 5],
   },
   {
     type: "collapse",
@@ -75,6 +76,7 @@ const routes = [
     icon: <Icon fontSize="small">list</Icon>,
     route: "/Gestion-de-usuarios",
     component: <UserManagement />,
+    roles: [1],
   },
   {
     type: "collapse",
@@ -83,6 +85,7 @@ const routes = [
     icon: <Icon fontSize="small">school</Icon>,
     route: "/estudiantes",
     component: <StudentsList />,
+    roles: [1, 2],
   },
   {
     type: "collapse",
@@ -91,6 +94,7 @@ const routes = [
     icon: <Icon fontSize="small">book</Icon>,
     route: "/carreras",
     component: <SubjectsList />,
+    roles: [1, 2],
   },
   {
     type: "collapse",
@@ -99,6 +103,7 @@ const routes = [
     icon: <Icon fontSize="small">library_books</Icon>,
     route: "/materias",
     component: <Materias />,
+    roles: [1, 2, 4],
   },
   {
     type: "collapse",
@@ -107,6 +112,7 @@ const routes = [
     icon: <Icon fontSize="small">grading</Icon>,
     route: "/notas",
     component: <GradesList />,
+    roles: [1, 4],
   },
   {
     type: "collapse",
@@ -115,6 +121,7 @@ const routes = [
     icon: <Icon fontSize="small">payments</Icon>,
     route: "/payments",
     component: <PaymentsList />,
+    roles: [1, 3],
   },
   {
     type: "collapse",
@@ -123,6 +130,7 @@ const routes = [
     icon: <Icon fontSize="small">bar_chart</Icon>,
     route: "/reports",
     component: <ReportsDashboard />,
+    roles: [1, 3],
   },
   // {
   //   type: "collapse",
@@ -166,6 +174,7 @@ const routes = [
     icon: <Icon fontSize="small">person</Icon>,
     route: "/user-profile",
     component: <UserProfile />,
+    roles: [1, 2, 3, 4, 5],
   },
   {
     type: "auth",
