@@ -11,14 +11,11 @@ import AuthService from "services/auth-service";
 import { AuthContext } from "context";
 import CircularProgress from "@mui/material/CircularProgress";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
-import bgImage1 from "assets/images/baner-infopro.png";
-import bgImage2 from "assets/images/baner-cladecorp.png";
-import banner from "assets/images/baner2.jpg";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
   const authContext = useContext(AuthContext);
   const navigate = useNavigate();
-  const [user, setUser] = useState({});
   const [credentialsErros, setCredentialsError] = useState(null);
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -32,7 +29,6 @@ function Login() {
     passwordError: false,
   });
 
-  const addUserHandler = (newUser) => setUser(newUser);
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
   const changeHandler = (e) => {
     setInputs({
@@ -62,31 +58,36 @@ function Login() {
     }
 
     const newUser = { email: inputs.email, password: inputs.password };
-    addUserHandler(newUser);
 
-    const myData = {
-      data: {
-        type: "token",
-        attributes: { ...newUser },
-      },
-    };
+    const myData = { email: inputs.email, password: inputs.password };
 
-    try {
-      const response = await AuthService.login(myData);
-      authContext.login(response.access_token, response.refresh_token);
-      navigate("/inicio");
-    } catch (res) {
-      if (res.hasOwnProperty("message")) {
-        setCredentialsError(res.message);
-      } else {
-        setCredentialsError(res.errors[0].detail);
-      }
+      try {
+    const response = await AuthService.login(myData);
+    const user = response.user;
+
+    sessionStorage.setItem("access_token", response.access_token);
+    sessionStorage.setItem("refresh_token", response.refresh_token);
+    sessionStorage.setItem("user", JSON.stringify(user));
+    
+    authContext.login(response.access_token, response.refresh_token, user);
+
+    navigate("/inicio");
+    } catch (err) {
+      // Suponiendo que la respuesta de error viene con estructura conocida
+    if (err.response && err.response.data) {
+      // Por ejemplo, si el backend envía mensaje en err.response.data.message
+      setCredentialsError(err.response.data.message || "Error desconocido");
+    } else if (err.message) {
+      // Si es un error general de JS
+      setCredentialsError(err.message);
+    } else {
+      setCredentialsError("Error desconocido al iniciar sesión.");
+    }
     } finally {
       setLoading(false);
     }
   };
 
-  // Color rojo del logo
   const primaryRed = "#D32F2F";
 
   return (
@@ -95,7 +96,6 @@ function Login() {
         <MDTypography variant="h4" fontWeight="medium" color="text" mt={2}>
           Iniciar sesión
         </MDTypography>
-
 
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form" method="POST" onSubmit={submitHandler}>

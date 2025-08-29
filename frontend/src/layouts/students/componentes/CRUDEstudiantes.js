@@ -49,6 +49,7 @@ export default function EstudiantesInscritos() {
 
     // Datos del usuario (nuevo)
     name: '',
+    codigo_estudiante: generateStudentCode(),
     apellido_paterno: '',
     apellido_materno: '',
     ci: '',
@@ -109,7 +110,7 @@ export default function EstudiantesInscritos() {
       newErrors.fecha_inscripcion = "Debe ingresar la fecha de inscripción";
     if (
       editEstudiante.estado &&
-      !["activo", "inactivo"].includes(editEstudiante.estado)
+      !["por_iniciar", "activo", "inactivo", "abandonado", "finalizado"].includes(editEstudiante.estado)
     )
       newErrors.estado = "Estado inválido";
        if (!editEstudiante.institucion || !["INFOPRO", "CLADECORP"].includes(editEstudiante.institucion))
@@ -223,6 +224,16 @@ export default function EstudiantesInscritos() {
       setLoading(false);
     });
 };
+function generateStudentCode(lastCode = null) {
+  if (!lastCode) return "T001"; // Primer estudiante
+
+  // Extraer el número del código anterior
+  const lastNumber = parseInt(lastCode.slice(1), 10);
+  const nextNumber = lastNumber + 1;
+
+  // Devolver el nuevo código con 3 dígitos
+  return `T${String(nextNumber).padStart(3, "0")}`;
+}
 useEffect(() => {
   fetchCarreras();
 }, []);
@@ -255,9 +266,11 @@ useEffect(() => {
         a_nombre_factura: estudiante.a_nombre_factura || '',
       });
     } else {
+      const lastCode = estudiantes.length ? estudiantes[estudiantes.length - 1].codigo_estudiante : null;
       setEditEstudiante({
         id: '',
         name: '',
+        codigo_estudiante: generateStudentCode(lastCode),
         apellido_paterno: '',
         apellido_materno: '',
         ci: '',
@@ -463,8 +476,17 @@ console.log(JSON.stringify(editEstudiante));
                 Datos del Estudiante
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                   <TextField label="Nombre" fullWidth name="name" value={editEstudiante.name} onChange={handleChange} error={Boolean(errors.name)} helperText={errors.name} />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Código Estudiante"
+                    fullWidth
+                    name="codigo_estudiante"
+                    value={editEstudiante.codigo_estudiante}
+                    InputProps={{ readOnly: true }}
+                  />
                 </Grid>
                 <Grid item xs={6}>
                   <TextField label="Apellido Paterno" fullWidth name="apellido_paterno" value={editEstudiante.apellido_paterno} onChange={handleChange} error={Boolean(errors.apellido_paterno)} helperText={errors.apellido_paterno} />
@@ -638,9 +660,10 @@ console.log(JSON.stringify(editEstudiante));
                     helperText={errors.estado}
                   >
                     <option value=""></option>
+                    <option value="por_iniciar">Por iniciar</option>
                     <option value="activo">Activo</option>
-                    <option value="retirado">Retirado</option>
-                    <option value="reprobado">Reprobado</option>
+                    <option value="inactivo">Inactivo</option>
+                    <option value="abandonado">Abandonado</option>
                     <option value="finalizado">Finalizado</option>
                   </TextField>
                 </Grid>
